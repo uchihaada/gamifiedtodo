@@ -1,9 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #fff8fb;
   --foreground: #171717;
+
+  --accent: #ec4899;
+  --accent-light: #fce7f3;
+  --accent-soft: #fdf2f8;
+
+  --secondary: #a855f7;
+  --secondary-light: #f3e8ff;
+
   color-scheme: light;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-mono: monospace;
 }
 
 * {
@@ -11,7 +26,7 @@
 }
 
 html {
-  background: #ffffff;
+  background: var(--background);
 }
 
 body {
@@ -19,4 +34,288 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================================================
+   THEME COLORS
+   ========================================================= */
+
+[data-theme="pink"] {
+  --background: #fff8fb;
+  --accent: #ec4899;
+  --accent-light: #fce7f3;
+  --accent-soft: #fdf2f8;
+  --secondary: #a855f7;
+  --secondary-light: #f3e8ff;
+}
+
+[data-theme="purple"] {
+  --background: #faf7ff;
+  --accent: #9333ea;
+  --accent-light: #f3e8ff;
+  --accent-soft: #faf5ff;
+  --secondary: #7c3aed;
+  --secondary-light: #ede9fe;
+}
+
+[data-theme="blue"] {
+  --background: #f7fbff;
+  --accent: #3b82f6;
+  --accent-light: #dbeafe;
+  --accent-soft: #eff6ff;
+  --secondary: #6366f1;
+  --secondary-light: #e0e7ff;
+}
+
+[data-theme="mint"] {
+  --background: #f5fffb;
+  --accent: #10b981;
+  --accent-light: #d1fae5;
+  --accent-soft: #ecfdf5;
+  --secondary: #14b8a6;
+  --secondary-light: #ccfbf1;
+}
+
+[data-theme="peach"] {
+  --background: #fffaf5;
+  --accent: #f97316;
+  --accent-light: #ffedd5;
+  --accent-soft: #fff7ed;
+  --secondary: #fb7185;
+  --secondary-light: #ffe4e6;
+}
+
+[data-theme="yellow"] {
+  --background: #fffef5;
+  --accent: #eab308;
+  --accent-light: #fef3c7;
+  --accent-soft: #fefce8;
+  --secondary: #f59e0b;
+  --secondary-light: #fef3c7;
+}
+
+/* =========================================================
+   MAP EXISTING PINK UTILITIES TO THE SELECTED THEME
+   ========================================================= */
+
+.bg-pink-500 {
+  background-color: var(--accent) !important;
+}
+
+.bg-pink-400 {
+  background-color: color-mix(
+    in srgb,
+    var(--accent) 85%,
+    white
+  ) !important;
+}
+
+.bg-pink-50 {
+  background-color: var(--accent-soft) !important;
+}
+
+.bg-pink-100 {
+  background-color: var(--accent-light) !important;
+}
+
+.text-pink-500,
+.text-pink-600 {
+  color: var(--accent) !important;
+}
+
+.text-pink-400 {
+  color: color-mix(
+    in srgb,
+    var(--accent) 75%,
+    white
+  ) !important;
+}
+
+.border-pink-100,
+.ring-pink-100 {
+  border-color: color-mix(
+    in srgb,
+    var(--accent) 20%,
+    white
+  ) !important;
+}
+
+.border-pink-300,
+.ring-pink-200 {
+  border-color: color-mix(
+    in srgb,
+    var(--accent) 45%,
+    white
+  ) !important;
+}
+
+.focus\:border-pink-300:focus {
+  border-color: var(--accent) !important;
+}
+
+.focus\:ring-pink-50:focus {
+  --tw-ring-color: var(--accent-soft) !important;
+}
+
+/* =========================================================
+   MAP EXISTING PURPLE UTILITIES
+   ========================================================= */
+
+.text-purple-500,
+.text-purple-600 {
+  color: var(--secondary) !important;
+}
+
+.bg-purple-50 {
+  background-color: var(--secondary-light) !important;
+}
+
+.bg-purple-100 {
+  background-color: color-mix(
+    in srgb,
+    var(--secondary) 12%,
+    white
+  ) !important;
+}
+
+.bg-purple-500 {
+  background-color: var(--secondary) !important;
+}
+
+/* =========================================================
+   GRADIENTS
+   ========================================================= */
+
+.from-pink-500 {
+  --tw-gradient-from: var(--accent) !important;
+}
+
+.to-purple-500 {
+  --tw-gradient-to: var(--secondary) !important;
+}
+
+.from-pink-400 {
+  --tw-gradient-from: color-mix(
+    in srgb,
+    var(--accent) 80%,
+    white
+  ) !important;
+}
+
+.from-pink-300 {
+  --tw-gradient-from: color-mix(
+    in srgb,
+    var(--accent) 65%,
+    white
+  ) !important;
+}
+
+.to-pink-400 {
+  --tw-gradient-to: color-mix(
+    in srgb,
+    var(--accent) 80%,
+    white
+  ) !important;
+}
+
+.to-pink-100 {
+  --tw-gradient-to: var(--accent-light) !important;
+}
+
+.from-purple-100 {
+  --tw-gradient-from: var(--secondary-light) !important;
+}
+
+.to-white {
+  --tw-gradient-to: #ffffff !important;
+}
+
+/* =========================================================
+   DARK MODE FOUNDATION
+   ========================================================= */
+
+html.dark {
+  color-scheme: dark;
+  --background: #111116;
+  --foreground: #f8fafc;
+}
+
+html.dark body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+html.dark .bg-white {
+  background-color: #1c1c24 !important;
+}
+
+html.dark .bg-slate-50 {
+  background-color: #24242d !important;
+}
+
+html.dark .bg-slate-100 {
+  background-color: #292933 !important;
+}
+
+html.dark .text-slate-900 {
+  color: #f8fafc !important;
+}
+
+html.dark .text-slate-800 {
+  color: #e2e8f0 !important;
+}
+
+html.dark .text-slate-700 {
+  color: #cbd5e1 !important;
+}
+
+html.dark .text-slate-600 {
+  color: #94a3b8 !important;
+}
+
+html.dark .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+html.dark .text-slate-400 {
+  color: #64748b !important;
+}
+
+html.dark .border-slate-100,
+html.dark .border-slate-200,
+html.dark .ring-slate-100 {
+  border-color: #2e2e38 !important;
+}
+
+html.dark .bg-pink-50 {
+  background-color: color-mix(
+    in srgb,
+    var(--accent) 15%,
+    #1c1c24
+  ) !important;
+}
+
+html.dark .bg-pink-100 {
+  background-color: color-mix(
+    in srgb,
+    var(--accent) 20%,
+    #1c1c24
+  ) !important;
+}
+
+html.dark .bg-purple-50,
+html.dark .bg-purple-100 {
+  background-color: color-mix(
+    in srgb,
+    var(--secondary) 15%,
+    #1c1c24
+  ) !important;
+}
+
+html.dark input {
+  color: #f8fafc;
+}
+
+html.dark input::placeholder {
+  color: #64748b;
 }

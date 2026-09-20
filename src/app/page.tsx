@@ -12,7 +12,6 @@ import {
   Plus,
   ShoppingBag,
   Sparkles,
-  Star,
   Play,
   Square,
 } from "lucide-react";
@@ -41,11 +40,15 @@ type ActiveSession = {
   startedAt: string;
 };
 
+type CareWindow = {
+  start_date: string;
+  end_date: string;
+};
+
 export default function Home() {
   const router = useRouter();
 
   const [displayName, setDisplayName] = useState("");
-  const [level, setLevel] = useState(1);
   const [lifetimeXp, setLifetimeXp] = useState(0);
   const [streak, setStreak] = useState(0);
   const [coins, setCoins] = useState(0);
@@ -65,6 +68,9 @@ export default function Home() {
   const [dailyEarnedXp, setDailyEarnedXp] = useState(0);
   const [dailyGoalReached, setDailyGoalReached] = useState(false);
 
+  const [careWindow, setCareWindow] =
+    useState<CareWindow | null>(null);
+
   function getTodayString() {
     const today = new Date();
 
@@ -73,6 +79,67 @@ export default function Home() {
     const day = String(today.getDate()).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
+  }
+
+  function getCareSettings(dateString: string) {
+    if (!careWindow) {
+      return {
+        active: false,
+        day: 0,
+        targetMultiplier: 0.8,
+      };
+    }
+
+    if (
+      dateString < careWindow.start_date ||
+      dateString > careWindow.end_date
+    ) {
+      return {
+        active: false,
+        day: 0,
+        targetMultiplier: 0.8,
+      };
+    }
+
+    const start = new Date(
+      `${careWindow.start_date}T00:00:00`
+    );
+    const current = new Date(
+      `${dateString}T00:00:00`
+    );
+
+    const day =
+      Math.floor(
+        (current.getTime() - start.getTime()) /
+          (1000 * 60 * 60 * 24)
+      ) + 1;
+
+    const targetMultipliers = [
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+    ];
+
+    const targetMultiplier =
+      targetMultipliers[day - 1] ?? 0.8;
+
+    return {
+      active: true,
+      day,
+      targetMultiplier,
+    };
+  }
+
+  function getTaskReward(difficulty: Task["difficulty"]) {
+    return difficulty === "boss"
+      ? { xp: 75, coins: 25 }
+      : getReward(difficulty);
+  }
+
+  function formatTargetMultiplier(multiplier: number) {
+    return `${Math.round(multiplier * 100)}%`;
   }
 
   function formatDuration(totalSeconds: number) {
@@ -195,8 +262,33 @@ export default function Home() {
 
     setDisplayName(profile.display_name);
     setLifetimeXp(profile.lifetime_xp ?? 0);
-    setLevel(profile.current_level ?? 1);
     setStreak(profile.current_streak ?? 0);
+
+    const todayString = getTodayString();
+
+    // Load today's active Care Window.
+    const {
+      data: activeCareWindow,
+      error: careWindowError,
+    } = await supabase
+      .from("care_windows")
+      .select("start_date, end_date")
+      .eq("user_id", user.id)
+      .lte("start_date", todayString)
+      .gte("end_date", todayString)
+      .order("start_date", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (careWindowError) {
+      console.error(
+        "Care Window error:",
+        careWindowError
+      );
+      setCareWindow(null);
+    } else {
+      setCareWindow(activeCareWindow ?? null);
+    }
 
     // Load coin balance
     const { data: coinTransactions, error: coinError } =
@@ -223,8 +315,6 @@ export default function Home() {
 
     // Check daily goal and award daily bonus
     await refreshDailyGoal();
-
-    const todayString = getTodayString();
 
     // Find tasks planned for today
     const { data: taskDays, error: taskDaysError } =
@@ -561,11 +651,6 @@ export default function Home() {
         )
       : 0;
 
-  const levelProgress = Math.min(
-    ((lifetimeXp % 100) / 100) * 100,
-    100
-  );
-
   const biriyaniProgress = Math.min(
     (coins / 2000) * 100,
     100
@@ -594,8 +679,18 @@ export default function Home() {
             </h1>
           </div>
 
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-pink-100">
-            <Sparkles className="h-5 w-5 text-pink-500" />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => router.push("/settings")}
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-slate-100 transition hover:bg-slate-50"
+              aria-label="Settings"
+            >
+              <span className="text-lg">⚙️</span>
+            </button>
+
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-pink-100">
+              <Sparkles className="h-5 w-5 text-pink-500" />
+            </div>
           </div>
         </header>
 
@@ -604,36 +699,27 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-pink-500">
-                Your Journey
+                Your Progress
               </p>
 
-              <div className="mt-1 flex items-center gap-2">
-                <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+              <p className="mt-1 text-2xl font-bold text-slate-900">
+                {lifetimeXp.toLocaleString()} XP
+              </p>
 
-                <span className="text-2xl font-bold text-slate-900">
-                  Level {level}
-                </span>
-              </div>
+              <p className="mt-0.5 text-xs text-slate-500">
+                Lifetime XP earned
+              </p>
             </div>
 
             <div className="text-right">
               <p className="text-xs text-slate-500">
-                Lifetime XP
+                Keep going ✨
               </p>
 
-              <p className="font-bold text-slate-800">
-                {lifetimeXp.toLocaleString()} XP
+              <p className="mt-1 text-sm font-semibold text-purple-600">
+                One quest at a time
               </p>
             </div>
-          </div>
-
-          <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/80">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-pink-400 to-purple-400 transition-all duration-500"
-              style={{
-                width: `${levelProgress}%`,
-              }}
-            />
           </div>
 
           <div className="mt-4 flex items-center justify-between">
@@ -654,6 +740,38 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {(() => {
+          const care = getCareSettings(getTodayString());
+
+          if (!care.active) {
+            return null;
+          }
+
+          return (
+            <section className="mt-4 rounded-3xl bg-gradient-to-r from-pink-100 to-purple-100 p-4 shadow-sm ring-1 ring-pink-100">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/80 text-xl">
+                  🌷
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold uppercase tracking-wider text-pink-500">
+                    Care Window · Day {care.day} of 5
+                  </p>
+
+                  <p className="mt-1 text-sm font-semibold text-slate-800">
+                    Reach {formatTargetMultiplier(care.targetMultiplier)} of planned XP for today&apos;s full daily reward.
+                  </p>
+
+                  <p className="mt-0.5 text-xs text-slate-500">
+                    Task rewards stay at 100% normal value.
+                  </p>
+                </div>
+              </div>
+            </section>
+          );
+        })()}
 
         {/* Daily Progress */}
         <section className="mt-5 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
@@ -765,10 +883,9 @@ export default function Home() {
                 const isBusy =
                   actionTaskId === task.id;
 
-                const taskReward =
-                  task.difficulty === "boss"
-                    ? { xp: 75, coins: 25 }
-                    : getReward(task.difficulty);
+                const taskReward = getTaskReward(
+                  task.difficulty
+                );
 
                 let subtitle = "";
 
