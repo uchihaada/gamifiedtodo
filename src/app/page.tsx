@@ -863,13 +863,13 @@ export default function Home() {
   );
 
   return (
-    <main className="min-h-screen bg-[#fff8fb] text-slate-800">
+    <main className="min-h-screen bg-[#fff8fb] text-slate-800 dark:text-[var(--app-foreground)] dark:bg-[var(--app-background)] dark:text-[var(--app-foreground)]">
       <div className="mx-auto min-h-screen max-w-md px-5 pb-28">
 
         {/* Header */}
         <header className="flex items-center justify-between pt-7">
           <div>
-            <p className="text-sm font-medium text-slate-500">
+            <p className="text-sm font-medium text-slate-500 dark:text-[var(--app-muted-strong)]">
               {new Date().toLocaleDateString(
                 "en-IN",
                 {
@@ -880,7 +880,7 @@ export default function Home() {
               )}
             </p>
 
-            <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">
+            <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 dark:text-[var(--app-foreground)]">
               Hey, {loading ? "..." : displayName} 🌸
             </h1>
           </div>
@@ -888,48 +888,48 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => router.push("/settings")}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-slate-100 transition hover:bg-slate-50"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-slate-100 transition hover:bg-slate-50 dark:bg-[var(--app-surface)] dark:ring-[var(--app-border)] dark:hover:bg-[var(--app-surface)]"
               aria-label="Settings"
             >
               <span className="text-lg">⚙️</span>
             </button>
 
             <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-pink-100">
-              <Sparkles className="h-5 w-5 text-pink-500" />
+              <Sparkles className="h-5 w-5 text-pink-500 dark:text-[var(--accent)]" />
             </div>
           </div>
         </header>
 
         {/* Player Card */}
-        <section className="mt-6 rounded-3xl bg-gradient-to-br from-pink-100 via-purple-50 to-white p-5 shadow-sm ring-1 ring-pink-100">
+        <section className="mt-6 rounded-3xl bg-gradient-to-br from-pink-100 via-purple-50 to-white p-5 shadow-sm ring-1 ring-pink-100 dark:from-[var(--accent-soft)] dark:via-[var(--app-surface)] dark:to-[var(--app-background)] dark:ring-[var(--accent-light)]">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-pink-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-pink-500 dark:text-[var(--accent)]">
                 Your Progress
               </p>
 
-              <p className="mt-1 text-2xl font-bold text-slate-900">
+              <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-[var(--app-foreground)]">
                 {lifetimeXp.toLocaleString()} XP
               </p>
 
-              <p className="mt-0.5 text-xs text-slate-500">
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-[var(--app-muted-strong)]">
                 Lifetime XP earned
               </p>
             </div>
 
             <div className="text-right">
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-[var(--app-muted-strong)]">
                 Keep going ✨
               </p>
 
-              <p className="mt-1 text-sm font-semibold text-purple-600">
+              <p className="mt-1 text-sm font-semibold text-purple-600 dark:text-[var(--accent)]">
                 One quest at a time
               </p>
             </div>
           </div>
 
           <div className="mt-4 flex items-center justify-between">
-            <div className="flex items-center gap-2 rounded-full bg-white/80 px-3 py-1.5">
+            <div className="flex items-center gap-2 rounded-full bg-white/80 dark:bg-[var(--app-surface)]/80 px-3 py-1.5 dark:bg-[var(--app-surface)]/80">
               <Flame className="h-4 w-4 fill-orange-400 text-orange-400" />
 
               <span className="text-sm font-semibold">
@@ -937,7 +937,7 @@ export default function Home() {
               </span>
             </div>
 
-            <div className="flex items-center gap-2 rounded-full bg-white/80 px-3 py-1.5">
+            <div className="flex items-center gap-2 rounded-full bg-white/80 dark:bg-[var(--app-surface)]/80 px-3 py-1.5 dark:bg-[var(--app-surface)]/80">
               <span className="text-base">🪙</span>
 
               <span className="text-sm font-semibold">
@@ -955,22 +955,22 @@ export default function Home() {
           }
 
           return (
-            <section className="mt-4 rounded-3xl bg-gradient-to-r from-pink-100 to-purple-100 p-4 shadow-sm ring-1 ring-pink-100">
+            <section className="mt-4 rounded-3xl bg-gradient-to-r from-pink-100 to-purple-100 p-4 shadow-sm ring-1 ring-pink-100 dark:from-[var(--accent-soft)] dark:to-[var(--app-surface)] dark:ring-[var(--accent-light)]">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/80 text-xl">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/80 dark:bg-[var(--app-surface)]/80 text-xl">
                   🌷
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-bold uppercase tracking-wider text-pink-500">
+                  <p className="text-xs font-bold uppercase tracking-wider text-pink-500 dark:text-[var(--accent)]">
                     Care Window · Day {care.day} of 5
                   </p>
 
-                  <p className="mt-1 text-sm font-semibold text-slate-800">
+                  <p className="mt-1 text-sm font-semibold text-slate-800 dark:text-[var(--app-foreground)]">
                     Reach {formatTargetMultiplier(care.targetMultiplier)} of planned XP for today&apos;s full daily reward.
                   </p>
 
-                  <p className="mt-0.5 text-xs text-slate-500">
+                  <p className="mt-0.5 text-xs text-slate-500 dark:text-[var(--app-muted-strong)]">
                     Task rewards stay at 100% normal value.
                   </p>
                 </div>
@@ -980,9 +980,9 @@ export default function Home() {
         })()}
 
         {streakRecovery && (
-          <section className="mt-4 rounded-3xl bg-gradient-to-r from-orange-50 to-pink-50 p-4 shadow-sm ring-1 ring-orange-100">
+          <section className="mt-4 rounded-3xl bg-gradient-to-r from-orange-50 to-pink-50 p-4 shadow-sm ring-1 ring-orange-100 dark:from-[#3a2520] dark:to-[var(--app-surface)] dark:ring-orange-900/50">
             <div className="flex items-start gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/80 text-xl">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/80 dark:bg-[var(--app-surface)]/80 text-xl">
                 🔥
               </div>
 
@@ -991,16 +991,16 @@ export default function Home() {
                   Streak Recovery
                 </p>
 
-                <p className="mt-1 text-base font-bold text-slate-900">
+                <p className="mt-1 text-base font-bold text-slate-900 dark:text-[var(--app-foreground)]">
                   Your {streakRecovery.lost_streak}-day streak was broken
                 </p>
 
-                <p className="mt-1 text-sm leading-5 text-slate-600">
+                <p className="mt-1 text-sm leading-5 text-slate-600 dark:text-[var(--app-muted-strong)]">
                   Restore the streak by spending {streakRecovery.recovery_cost.toLocaleString()} 🪙. The missed day&apos;s task rewards are not restored.
                 </p>
 
-                <div className="mt-3 rounded-2xl bg-white/70 px-3 py-2">
-                  <p className="text-xs text-slate-500">
+                <div className="mt-3 rounded-2xl bg-white/70 px-3 py-2 dark:bg-[var(--app-surface)]/70">
+                  <p className="text-xs text-slate-500 dark:text-[var(--app-muted-strong)]">
                     Recovery expires: {formatRecoveryExpiry(streakRecovery.expires_at)}
                   </p>
                 </div>
@@ -1028,30 +1028,30 @@ export default function Home() {
         )}
 
         {/* Daily Progress */}
-        <section className="mt-5 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+        <section className="mt-5 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100 dark:bg-[var(--app-surface)] dark:ring-[var(--accent-light)] dark:shadow-black/20">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm font-semibold text-slate-500">
+              <p className="text-sm font-semibold text-slate-500 dark:text-[var(--app-muted-strong)]">
                 TODAY&apos;S QUEST
               </p>
 
-              <h2 className="mt-1 text-xl font-bold text-slate-900">
+              <h2 className="mt-1 text-xl font-bold text-slate-900 dark:text-[var(--app-foreground)]">
                 Daily Progress 🎯
               </h2>
             </div>
 
-            <div className="rounded-2xl bg-pink-50 px-3 py-2 text-center">
-              <p className="text-lg font-bold text-pink-600">
+            <div className="rounded-2xl bg-pink-50 dark:bg-[var(--accent-soft)] px-3 py-2 text-center dark:bg-[var(--accent-soft)]">
+              <p className="text-lg font-bold text-pink-600 dark:text-[var(--accent)]">
                 {dailyEarnedXp}
               </p>
 
-              <p className="text-[10px] font-medium text-pink-400">
+              <p className="text-[10px] font-medium text-pink-400 dark:text-[var(--accent)]">
                 / {dailyTarget} XP
               </p>
             </div>
           </div>
 
-          <div className="mt-4 h-3 overflow-hidden rounded-full bg-slate-100">
+          <div className="mt-4 h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-[var(--app-border)]">
             <div
               className="h-full rounded-full bg-pink-400 transition-all duration-500"
               style={{
@@ -1061,7 +1061,7 @@ export default function Home() {
           </div>
 
           <div className="mt-3 flex items-center justify-between text-sm">
-            <span className="text-slate-500">
+            <span className="text-slate-500 dark:text-[var(--app-muted-strong)]">
               {completedCount} of {totalTasks} tasks complete
             </span>
 
@@ -1070,7 +1070,7 @@ export default function Home() {
                 Goal complete! ✨
               </span>
             ) : (
-              <span className="font-medium text-pink-500">
+              <span className="font-medium text-pink-500 dark:text-[var(--accent)]">
                 Keep going 💪
               </span>
             )}
@@ -1080,13 +1080,13 @@ export default function Home() {
         {/* Today's Tasks */}
         <section className="mt-6">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-slate-900">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-[var(--app-foreground)]">
               Today&apos;s Tasks
             </h2>
 
             <button
               onClick={() => router.push("/week")}
-              className="flex items-center gap-1 text-sm font-semibold text-pink-500"
+              className="flex items-center gap-1 text-sm font-semibold text-pink-500 dark:text-[var(--accent)]"
             >
               See all
               <ChevronRight className="h-4 w-4" />
@@ -1094,16 +1094,16 @@ export default function Home() {
           </div>
 
           {tasks.length === 0 ? (
-            <div className="rounded-3xl bg-white p-6 text-center shadow-sm ring-1 ring-slate-100">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-pink-50">
-                <Sparkles className="h-6 w-6 text-pink-400" />
+            <div className="rounded-3xl bg-white p-6 text-center shadow-sm ring-1 ring-slate-100 dark:bg-[var(--app-surface)] dark:ring-[var(--app-border)]">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-pink-50 dark:bg-[var(--accent-soft)]">
+                <Sparkles className="h-6 w-6 text-pink-400 dark:text-[var(--accent)]" />
               </div>
 
-              <h3 className="mt-3 font-bold text-slate-800">
+              <h3 className="mt-3 font-bold text-slate-800 dark:text-[var(--app-foreground)]">
                 No quests today 🌷
               </h3>
 
-              <p className="mt-1 text-sm text-slate-400">
+              <p className="mt-1 text-sm text-slate-400 dark:text-[var(--app-muted)]">
                 Enjoy a lighter day or add something new.
               </p>
             </div>
@@ -1186,7 +1186,7 @@ export default function Home() {
                   return (
                     <div
                       key={task.id}
-                      className={`rounded-3xl bg-white p-4 shadow-sm ring-1 transition ${
+                      className={`rounded-3xl bg-white p-4 shadow-sm ring-1 transition hover:-translate-y-0.5 hover:shadow-md dark:bg-[var(--app-surface)] ${
                         completed
                           ? "ring-green-100"
                           : isActive
@@ -1198,10 +1198,10 @@ export default function Home() {
                         <div
                           className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${
                             completed
-                              ? "bg-green-100 text-green-600"
+                              ? "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-300"
                               : isActive
-                                ? "bg-pink-100 text-pink-500"
-                                : "bg-pink-50 text-pink-500"
+                                ? "bg-pink-100 dark:bg-[var(--accent-soft)] text-pink-500 dark:text-[var(--accent)]"
+                                : "bg-pink-50 dark:bg-[var(--accent-soft)] text-pink-500 dark:text-[var(--accent)]"
                           }`}
                         >
                           {completed ? (
@@ -1218,24 +1218,24 @@ export default function Home() {
                           <p
                             className={`font-semibold ${
                               completed
-                                ? "text-slate-400"
-                                : "text-slate-800"
+                                ? "text-slate-400 dark:text-[var(--app-muted)]"
+                                : "text-slate-800 dark:text-[var(--app-foreground)]"
                             }`}
                           >
                             {task.title}
                           </p>
 
-                          <p className="mt-1 text-xs text-slate-400">
+                          <p className="mt-1 text-xs text-slate-400 dark:text-[var(--app-muted)]">
                             {subtitle}
                           </p>
                         </div>
 
                         <div className="text-right">
-                          <p className="text-sm font-bold text-purple-500">
+                          <p className="text-sm font-bold text-purple-500 dark:text-[var(--accent)]">
                             +{taskReward.xp} XP
                           </p>
 
-                          <p className="mt-1 text-xs text-slate-400">
+                          <p className="mt-1 text-xs text-slate-400 dark:text-[var(--app-muted)]">
                             +{taskReward.coins} 🪙
                           </p>
                         </div>
@@ -1244,20 +1244,20 @@ export default function Home() {
                       {/* Timed progress */}
                       <div className="mt-4">
                         <div className="mb-2 flex items-center justify-between text-xs">
-                          <span className="font-medium text-slate-500">
+                          <span className="font-medium text-slate-500 dark:text-[var(--app-muted-strong)]">
                             {formatDuration(
                               visibleSeconds
                             )}
                           </span>
 
-                          <span className="text-slate-400">
+                          <span className="text-slate-400 dark:text-[var(--app-muted)]">
                             {formatTarget(
                               task.target_value
                             )}
                           </span>
                         </div>
 
-                        <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+                        <div className="h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-[var(--app-border)]">
                           <div
                             className="h-full rounded-full bg-gradient-to-r from-pink-400 to-purple-400 transition-all duration-300"
                             style={{
@@ -1270,7 +1270,7 @@ export default function Home() {
                       {/* Start / Stop */}
                       <div className="mt-4">
                         {completed ? (
-                          <div className="flex items-center justify-center gap-2 rounded-2xl bg-green-50 px-4 py-3 text-sm font-semibold text-green-600">
+                          <div className="flex items-center justify-center gap-2 rounded-2xl bg-green-50 px-4 py-3 text-sm font-semibold text-green-600 dark:bg-green-950/30 dark:text-green-300">
                             <Check className="h-4 w-4" />
                             Today&apos;s target complete
                           </div>
@@ -1280,7 +1280,7 @@ export default function Home() {
                               stopTimedTask(task)
                             }
                             disabled={isBusy}
-                            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-pink-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-pink-600 disabled:cursor-wait disabled:opacity-60"
+                            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-pink-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-pink-600 dark:bg-[var(--accent)] dark:hover:opacity-90 disabled:cursor-wait disabled:opacity-60"
                           >
                             <Square
                               className="h-4 w-4 fill-current"
@@ -1299,7 +1299,7 @@ export default function Home() {
                               isBusy ||
                               activeSession !== null
                             }
-                            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-500 px-4 py-3 text-sm font-semibold text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-500 px-4 py-3 text-sm font-semibold text-white dark:from-[var(--accent)] dark:to-[var(--accent)] transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             <Play className="h-4 w-4 fill-current" />
 
@@ -1338,8 +1338,8 @@ export default function Home() {
                     <div
                       className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition ${
                         completed
-                          ? "bg-green-100 text-green-600"
-                          : "bg-pink-50 text-pink-500"
+                          ? "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-300"
+                          : "bg-pink-50 dark:bg-[var(--accent-soft)] text-pink-500 dark:text-[var(--accent)]"
                       }`}
                     >
                       {completed ? (
@@ -1356,24 +1356,24 @@ export default function Home() {
                       <p
                         className={`font-semibold ${
                           completed
-                            ? "text-slate-400 line-through"
-                            : "text-slate-800"
+                            ? "text-slate-400 dark:text-[var(--app-muted)] line-through"
+                            : "text-slate-800 dark:text-[var(--app-foreground)]"
                         }`}
                       >
                         {task.title}
                       </p>
 
-                      <p className="mt-1 text-xs text-slate-400">
+                      <p className="mt-1 text-xs text-slate-400 dark:text-[var(--app-muted)]">
                         {subtitle}
                       </p>
                     </div>
 
                     <div className="text-right">
-                      <p className="text-sm font-bold text-purple-500">
+                      <p className="text-sm font-bold text-purple-500 dark:text-[var(--accent)]">
                         +{taskReward.xp} XP
                       </p>
 
-                      <p className="mt-1 text-xs text-slate-400">
+                      <p className="mt-1 text-xs text-slate-400 dark:text-[var(--app-muted)]">
                         +{taskReward.coins} 🪙
                       </p>
                     </div>
@@ -1385,28 +1385,28 @@ export default function Home() {
         </section>
 
         {/* Daily Goal */}
-        <section className="mt-6 rounded-3xl bg-gradient-to-r from-purple-100 to-pink-100 p-5">
+        <section className="mt-6 rounded-3xl bg-gradient-to-r from-purple-100 to-pink-100 p-5 shadow-sm ring-1 ring-purple-100 dark:from-[#29264a] dark:to-[#3a2942] dark:ring-[var(--accent-light)]">
           <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/80">
-              <Gift className="h-6 w-6 text-purple-500" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/80 dark:bg-[var(--app-surface)]/80">
+              <Gift className="h-6 w-6 text-purple-500 dark:text-[var(--accent)]" />
             </div>
 
             <div className="flex-1">
-              <p className="text-xs font-bold uppercase tracking-wider text-purple-500">
+              <p className="text-xs font-bold uppercase tracking-wider text-purple-500 dark:text-[var(--accent)]">
                 Daily Reward
               </p>
 
-              <h3 className="mt-1 font-bold text-slate-900">
+              <h3 className="mt-1 font-bold text-slate-900 dark:text-[var(--app-foreground)]">
                 Hit your daily target
               </h3>
 
-              <p className="mt-1 text-sm text-slate-600">
+              <p className="mt-1 text-sm text-slate-600 dark:text-[var(--app-muted-strong)]">
                 Complete your target and earn{" "}
-                <span className="font-bold text-purple-600">
+                <span className="font-bold text-purple-600 dark:text-[var(--accent)]">
                   +25 XP
                 </span>{" "}
                 and{" "}
-                <span className="font-bold text-purple-600">
+                <span className="font-bold text-purple-600 dark:text-[var(--accent)]">
                   +10 🪙
                 </span>
               </p>
@@ -1421,14 +1421,14 @@ export default function Home() {
         </section>
 
         {/* Biriyani */}
-        <section className="mt-6 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+        <section className="mt-6 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100 dark:bg-[var(--app-surface)] dark:ring-[var(--accent-light)] dark:shadow-black/20">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-pink-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-pink-500 dark:text-[var(--accent)]">
                 Ultimate Reward
               </p>
 
-              <h2 className="mt-1 text-xl font-bold text-slate-900">
+              <h2 className="mt-1 text-xl font-bold text-slate-900 dark:text-[var(--app-foreground)]">
                 🍗 Biriyani
               </h2>
             </div>
@@ -1437,16 +1437,16 @@ export default function Home() {
           </div>
 
           <div className="mt-4 flex items-end justify-between">
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500 dark:text-[var(--app-muted-strong)]">
               Your progress
             </p>
 
-            <p className="font-bold text-slate-800">
+            <p className="font-bold text-slate-800 dark:text-[var(--app-foreground)]">
               {coins.toLocaleString()} / 2,000 🪙
             </p>
           </div>
 
-          <div className="mt-2 h-3 overflow-hidden rounded-full bg-slate-100">
+          <div className="mt-2 h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-[var(--app-border)]">
             <div
               className="h-full rounded-full bg-gradient-to-r from-orange-300 to-pink-400 transition-all duration-500"
               style={{
@@ -1455,14 +1455,14 @@ export default function Home() {
             />
           </div>
 
-          <p className="mt-3 text-xs text-slate-400">
+          <p className="mt-3 text-xs text-slate-400 dark:text-[var(--app-muted)]">
             Keep going — your biriyani is getting closer! 💕
           </p>
         </section>
       </div>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-100 bg-white/95 backdrop-blur">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-100 bg-white/95 backdrop-blur dark:border-[var(--app-border)] dark:bg-[var(--app-surface)]/95">
         <div className="mx-auto flex max-w-md items-center justify-around px-3 py-3">
           <NavItem
             icon={<HomeIcon />}
@@ -1521,8 +1521,8 @@ function NavItem({
       onClick={onClick}
       className={`flex min-w-[58px] flex-col items-center gap-1 text-xs font-medium transition ${
         active
-          ? "text-pink-500"
-          : "text-slate-400 hover:text-pink-400"
+          ? "text-pink-500 dark:text-[var(--accent)]"
+          : "text-slate-400 dark:text-[var(--app-muted)] hover:text-pink-400 dark:text-[var(--accent)]"
       }`}
     >
       <div className="h-5 w-5">{icon}</div>

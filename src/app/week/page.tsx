@@ -309,16 +309,16 @@ export default function WeekPage() {
   );
 
   return (
-    <main className="min-h-screen bg-[#fff8fb] text-slate-800">
+    <main className="min-h-screen bg-[#fff8fb] text-slate-800 dark:text-[var(--app-foreground)] dark:bg-[var(--app-background)] dark:text-[var(--app-foreground)]">
       <div className="mx-auto min-h-screen max-w-md px-5 pb-28">
         <header className="pt-7">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-pink-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-pink-500 dark:text-[var(--accent)]">
                 Weekly Plan
               </p>
 
-              <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">
+              <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 dark:text-[var(--app-foreground)]">
                 Your Week
               </h1>
             </div>
@@ -331,17 +331,17 @@ export default function WeekPage() {
             </button>
           </div>
 
-          <div className="mt-5 rounded-3xl bg-white p-4 shadow-sm ring-1 ring-slate-100">
+          <div className="mt-5 rounded-3xl bg-white p-4 shadow-sm ring-1 ring-slate-100 dark:bg-[var(--app-surface)] dark:ring-[var(--app-border)]">
             <div className="flex items-center justify-between">
               <button
                 onClick={() => moveWeek(-1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-50 text-slate-600"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-50 dark:bg-[var(--app-background)] text-slate-600 dark:bg-[var(--app-background)] dark:text-[var(--app-muted-strong)]"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
 
               <div className="text-center">
-                <p className="font-bold text-slate-900">
+                <p className="font-bold text-slate-900 dark:text-[var(--app-foreground)]">
                   {formatDateRange(
                     currentMonday,
                     addDays(currentMonday, 6)
@@ -350,13 +350,13 @@ export default function WeekPage() {
 
                 {weekStart ===
                 getLocalDateString(getMonday()) ? (
-                  <p className="mt-1 text-xs font-medium text-pink-500">
+                  <p className="mt-1 text-xs font-medium text-pink-500 dark:text-[var(--accent)]">
                     Current week
                   </p>
                 ) : (
                   <button
                     onClick={goToCurrentWeek}
-                    className="mt-1 text-xs font-semibold text-pink-500"
+                    className="mt-1 text-xs font-semibold text-pink-500 dark:text-[var(--accent)]"
                   >
                     Back to current week
                   </button>
@@ -365,27 +365,27 @@ export default function WeekPage() {
 
               <button
                 onClick={() => moveWeek(1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-50 text-slate-600"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-50 dark:bg-[var(--app-background)] text-slate-600 dark:bg-[var(--app-background)] dark:text-[var(--app-muted-strong)]"
               >
                 <ChevronRight className="h-5 w-5" />
               </button>
             </div>
 
             <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl bg-pink-50 p-3">
+              <div className="rounded-2xl bg-pink-50 p-3 dark:bg-[var(--accent-soft)]">
                 <p className="text-xs text-slate-500">
                   Planned XP
                 </p>
-                <p className="mt-1 text-lg font-bold text-pink-600">
+                <p className="mt-1 text-lg font-bold text-pink-600 dark:text-[var(--accent)]">
                   {totalPlannedXp}
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-purple-50 p-3">
+              <div className="rounded-2xl bg-purple-50 p-3 dark:bg-[var(--accent-soft)]">
                 <p className="text-xs text-slate-500">
                   Earned XP
                 </p>
-                <p className="mt-1 text-lg font-bold text-purple-600">
+                <p className="mt-1 text-lg font-bold text-purple-600 dark:text-[var(--accent)]">
                   {totalCompletedXp}
                 </p>
               </div>
@@ -397,7 +397,7 @@ export default function WeekPage() {
           {loading ? (
             <div className="rounded-3xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-100">
               <Sparkles className="mx-auto h-6 w-6 animate-pulse text-pink-400" />
-              <p className="mt-3 text-sm text-slate-400">
+              <p className="mt-3 text-sm text-slate-400 dark:text-[var(--app-muted)]">
                 Loading your week...
               </p>
             </div>
@@ -422,7 +422,7 @@ export default function WeekPage() {
                           className={`flex h-12 w-12 flex-col items-center justify-center rounded-2xl ${
                             isToday
                               ? "bg-pink-500 text-white"
-                              : "bg-slate-50 text-slate-600"
+                              : "bg-slate-50 dark:bg-[var(--app-background)] text-slate-600 dark:bg-[var(--app-background)] dark:text-[var(--app-muted-strong)]"
                           }`}
                         >
                           <span className="text-[10px] font-bold uppercase">
@@ -435,13 +435,13 @@ export default function WeekPage() {
                         </div>
 
                         <div>
-                          <p className="font-bold text-slate-900">
+                          <p className="font-bold text-slate-900 dark:text-[var(--app-foreground)]">
                             {isToday
                               ? "Today"
                               : day.label}
                           </p>
 
-                          <p className="text-xs text-slate-400">
+                          <p className="text-xs text-slate-400 dark:text-[var(--app-muted)]">
                             {day.tasks.length}{" "}
                             {day.tasks.length === 1
                               ? "quest"
@@ -451,15 +451,15 @@ export default function WeekPage() {
                       </div>
 
                       {isPast && (
-                        <span className="text-xs font-medium text-slate-300">
+                        <span className="text-xs font-medium text-slate-300 dark:text-[var(--app-muted)]">
                           Past
                         </span>
                       )}
                     </div>
 
                     {day.tasks.length === 0 ? (
-                      <div className="mt-3 rounded-2xl bg-slate-50 p-4 text-center">
-                        <p className="text-sm text-slate-400">
+                      <div className="mt-3 rounded-2xl bg-slate-50 dark:bg-[var(--app-background)] p-4 text-center dark:bg-[var(--app-background)]">
+                        <p className="text-sm text-slate-400 dark:text-[var(--app-muted)]">
                           No quests planned
                         </p>
                       </div>
@@ -479,14 +479,14 @@ export default function WeekPage() {
                               className={`flex items-center gap-3 rounded-2xl p-3 ${
                                 completed
                                   ? "bg-green-50"
-                                  : "bg-slate-50"
+                                  : "bg-slate-50 dark:bg-[var(--app-background)]"
                               }`}
                             >
                               <div
                                 className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
                                   completed
                                     ? "bg-green-100 text-green-600"
-                                    : "bg-white text-pink-500"
+                                    : "bg-white text-pink-500 dark:bg-[var(--app-surface)] dark:text-[var(--accent)] dark:text-[var(--accent)]"
                                 }`}
                               >
                                 {completed ? (
@@ -503,24 +503,24 @@ export default function WeekPage() {
                                 <p
                                   className={`truncate text-sm font-semibold ${
                                     completed
-                                      ? "text-slate-400 line-through"
-                                      : "text-slate-800"
+                                      ? "text-slate-400 dark:text-[var(--app-muted)] line-through"
+                                      : "text-slate-800 dark:text-[var(--app-foreground)]"
                                   }`}
                                 >
                                   {task.title}
                                 </p>
 
-                                <p className="mt-0.5 truncate text-[11px] text-slate-400">
+                                <p className="mt-0.5 truncate text-[11px] text-slate-400 dark:text-[var(--app-muted)]">
                                   {getTaskSubtitle(task)}
                                 </p>
                               </div>
 
                               <div className="text-right">
-                                <p className="text-xs font-bold text-purple-500">
+                                <p className="text-xs font-bold text-purple-500 dark:text-[var(--accent)]">
                                   +{reward.xp} XP
                                 </p>
 
-                                <p className="mt-0.5 text-[10px] text-slate-400">
+                                <p className="mt-0.5 text-[10px] text-slate-400 dark:text-[var(--app-muted)]">
                                   {completed
                                     ? "Earned"
                                     : "Available"}
@@ -539,11 +539,11 @@ export default function WeekPage() {
         </section>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-100 bg-white/95 backdrop-blur">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-100 dark:border-[var(--app-border)] bg-white/95 dark:bg-[var(--app-surface)]/95 backdrop-blur">
         <div className="mx-auto flex max-w-md items-center justify-around px-3 py-3">
           <button
             onClick={() => router.push("/")}
-            className="flex min-w-[58px] flex-col items-center gap-1 text-xs font-medium text-slate-400"
+            className="flex min-w-[58px] flex-col items-center gap-1 text-xs font-medium text-slate-400 dark:text-[var(--app-muted)]"
           >
             <HomeIcon className="h-5 w-5" />
             <span>Home</span>
@@ -551,7 +551,7 @@ export default function WeekPage() {
 
           <button
             onClick={() => router.push("/week")}
-            className="flex min-w-[58px] flex-col items-center gap-1 text-xs font-medium text-pink-500"
+            className="flex min-w-[58px] flex-col items-center gap-1 text-xs font-medium text-pink-500 dark:text-[var(--accent)]"
           >
             <ListTodo className="h-5 w-5" />
             <span>Week</span>
@@ -559,14 +559,14 @@ export default function WeekPage() {
 
           <button
             onClick={() => router.push("/add")}
-            className="flex h-14 w-14 -translate-y-5 items-center justify-center rounded-full bg-pink-500 text-white shadow-lg shadow-pink-200"
+            className="flex h-14 w-14 -translate-y-5 items-center justify-center rounded-full bg-pink-500 text-white shadow-lg shadow-pink-200 dark:bg-[var(--accent)] dark:shadow-none"
           >
             <Plus className="h-7 w-7" strokeWidth={2.5} />
           </button>
 
           <button
             onClick={() => router.push("/stats")}
-            className="flex min-w-[58px] flex-col items-center gap-1 text-xs font-medium text-slate-400"
+            className="flex min-w-[58px] flex-col items-center gap-1 text-xs font-medium text-slate-400 dark:text-[var(--app-muted)]"
           >
             <BarChart3 className="h-5 w-5" />
             <span>Stats</span>
@@ -574,7 +574,7 @@ export default function WeekPage() {
 
           <button
             onClick={() => router.push("/rewards")}
-            className="flex min-w-[58px] flex-col items-center gap-1 text-xs font-medium text-slate-400"
+            className="flex min-w-[58px] flex-col items-center gap-1 text-xs font-medium text-slate-400 dark:text-[var(--app-muted)]"
           >
             <ShoppingBag className="h-5 w-5" />
             <span>Rewards</span>

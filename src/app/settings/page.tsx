@@ -21,13 +21,13 @@ const themes = [
     key: "pink",
     label: "Pink",
     emoji: "🌸",
-    activeClass: "bg-pink-500",
+    activeClass: "bg-[var(--accent-soft)]0",
   },
   {
     key: "purple",
     label: "Purple",
     emoji: "💜",
-    activeClass: "bg-purple-500",
+    activeClass: "bg-[var(--accent-soft)]0",
   },
   {
     key: "blue",
@@ -463,43 +463,43 @@ export default function SettingsPage() {
       : 0;
 
   return (
-    <main className="min-h-screen bg-[#fff8fb] text-slate-800">
+    <main className="min-h-screen bg-[var(--app-background)] text-[var(--app-foreground)]">
       <div className="mx-auto min-h-screen max-w-md px-5 pb-10">
 
         {/* Header */}
         <header className="flex items-center gap-3 pt-7">
           <button
             onClick={() => router.back()}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-slate-100 transition hover:bg-slate-50"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--app-surface)] shadow-sm ring-1 ring-[var(--app-border)] transition hover:opacity-90"
             aria-label="Go back"
           >
-            <ArrowLeft className="h-5 w-5 text-slate-600" />
+            <ArrowLeft className="h-5 w-5 text-[var(--app-muted-strong)]" />
           </button>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-pink-500">
+            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
               Your Account
             </p>
 
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            <h1 className="text-2xl font-bold tracking-tight text-[var(--app-foreground)]">
               Settings ⚙️
             </h1>
           </div>
         </header>
 
         {/* Profile */}
-        <section className="mt-6 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+        <section className="mt-6 rounded-3xl bg-[var(--app-surface)] p-5 shadow-sm ring-1 ring-[var(--app-border)]">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-pink-50">
-              <User className="h-5 w-5 text-pink-500" />
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--accent-soft)]">
+              <User className="h-5 w-5 text-[var(--accent)]" />
             </div>
 
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-pink-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
                 Profile
               </p>
 
-              <h2 className="mt-0.5 text-lg font-bold text-slate-900">
+              <h2 className="mt-0.5 text-lg font-bold text-[var(--app-foreground)]">
                 Your name
               </h2>
             </div>
@@ -508,7 +508,7 @@ export default function SettingsPage() {
           <div className="mt-5">
             <label
               htmlFor="displayName"
-              className="text-sm font-medium text-slate-600"
+              className="text-sm font-medium text-[var(--app-muted-strong)]"
             >
               Display name
             </label>
@@ -530,7 +530,7 @@ export default function SettingsPage() {
               }
               placeholder="Enter your name"
               maxLength={40}
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-base font-medium text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-50 disabled:opacity-60"
+              className="mt-2 w-full rounded-2xl border border-[var(--app-border)] bg-[var(--app-background)] px-4 py-3 text-base font-medium text-[var(--app-foreground)] outline-none transition placeholder:text-[var(--app-muted)] focus:border-[var(--accent)] focus:bg-[var(--app-surface)] focus:ring-4 focus:ring-[var(--accent-soft)] disabled:opacity-60"
             />
 
             <button
@@ -541,7 +541,7 @@ export default function SettingsPage() {
                 !hasNameChanges ||
                 !displayName.trim()
               }
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-500 px-4 py-3 text-sm font-semibold text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {saved ? (
                 <>
@@ -561,17 +561,17 @@ export default function SettingsPage() {
         </section>
 
         {/* Appearance */}
-        <section className="mt-6 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
-          <p className="text-xs font-semibold uppercase tracking-wider text-pink-500">
+        <section className="mt-6 rounded-3xl bg-[var(--app-surface)] p-5 shadow-sm ring-1 ring-[var(--app-border)]">
+          <p className="text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
             Appearance
           </p>
 
-          <h2 className="mt-1 text-lg font-bold text-slate-900">
+          <h2 className="mt-1 text-lg font-bold text-[var(--app-foreground)]">
             Make it yours 🎨
           </h2>
 
           <div className="mt-5">
-            <p className="text-sm font-semibold text-slate-700">
+            <p className="text-sm font-semibold text-[var(--app-muted-strong)]">
               Theme color
             </p>
 
@@ -590,8 +590,8 @@ export default function SettingsPage() {
                     }
                     className={`rounded-2xl border p-3 text-center transition ${
                       selected
-                        ? "border-pink-300 bg-pink-50 ring-2 ring-pink-100"
-                        : "border-slate-100 bg-slate-50 hover:bg-white"
+                        ? "border-[var(--accent)] bg-[var(--accent-soft)] ring-2 ring-[var(--accent-light)]"
+                        : "border-[var(--app-border)] bg-[var(--app-background)] hover:bg-[var(--app-surface)]"
                     }`}
                   >
                     <div
@@ -606,7 +606,7 @@ export default function SettingsPage() {
                       )}
                     </div>
 
-                    <p className="mt-2 text-xs font-semibold text-slate-600">
+                    <p className="mt-2 text-xs font-semibold text-[var(--app-muted-strong)]">
                       {item.label}
                     </p>
                   </button>
@@ -616,7 +616,7 @@ export default function SettingsPage() {
           </div>
 
           <div className="mt-6">
-            <p className="text-sm font-semibold text-slate-700">
+            <p className="text-sm font-semibold text-[var(--app-muted-strong)]">
               Appearance
             </p>
 
@@ -629,8 +629,8 @@ export default function SettingsPage() {
                 }
                 className={`flex flex-col items-center gap-2 rounded-2xl border p-3 transition ${
                   appearance === "light"
-                    ? "border-pink-300 bg-pink-50 ring-2 ring-pink-100"
-                    : "border-slate-100 bg-slate-50"
+                    ? "border-[var(--accent)] bg-[var(--accent-soft)] ring-2 ring-[var(--accent-light)]"
+                    : "border-[var(--app-border)] bg-[var(--app-background)]"
                 }`}
               >
                 <Sun className="h-5 w-5 text-orange-400" />
@@ -648,11 +648,11 @@ export default function SettingsPage() {
                 }
                 className={`flex flex-col items-center gap-2 rounded-2xl border p-3 transition ${
                   appearance === "dark"
-                    ? "border-pink-300 bg-pink-50 ring-2 ring-pink-100"
-                    : "border-slate-100 bg-slate-50"
+                    ? "border-[var(--accent)] bg-[var(--accent-soft)] ring-2 ring-[var(--accent-light)]"
+                    : "border-[var(--app-border)] bg-[var(--app-background)]"
                 }`}
               >
-                <Moon className="h-5 w-5 text-purple-500" />
+                <Moon className="h-5 w-5 text-[var(--accent)]" />
 
                 <span className="text-xs font-semibold">
                   Dark
@@ -667,13 +667,13 @@ export default function SettingsPage() {
                 }
                 className={`flex flex-col items-center gap-2 rounded-2xl border p-3 transition ${
                   appearance === "system"
-                    ? "border-pink-300 bg-pink-50 ring-2 ring-pink-100"
-                    : "border-slate-100 bg-slate-50"
+                    ? "border-[var(--accent)] bg-[var(--accent-soft)] ring-2 ring-[var(--accent-light)]"
+                    : "border-[var(--app-border)] bg-[var(--app-background)]"
                 }`}
               >
                 <div className="flex h-5 items-center gap-0.5">
                   <Sun className="h-4 w-4 text-orange-400" />
-                  <Moon className="h-4 w-4 text-purple-500" />
+                  <Moon className="h-4 w-4 text-[var(--accent)]" />
                 </div>
 
                 <span className="text-xs font-semibold">
@@ -683,34 +683,34 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <p className="mt-4 text-xs leading-5 text-slate-400">
+          <p className="mt-4 text-xs leading-5 text-[var(--app-muted)]">
             Your preferences are saved on this device.
           </p>
         </section>
 
         {/* Care Window */}
-        <section className="mt-6 rounded-3xl bg-gradient-to-br from-pink-100 via-purple-50 to-white p-5 shadow-sm ring-1 ring-pink-100">
+        <section className="mt-6 rounded-3xl bg-gradient-to-br from-pink-100 via-purple-50 to-white p-5 shadow-sm ring-1 ring-pink-100 dark:bg-none dark:bg-[var(--app-surface)] dark:ring-[var(--app-border)]">
           <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/80 text-2xl">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[var(--app-surface)]/80 text-2xl">
               🌷
             </div>
 
             <div className="flex-1">
-              <p className="text-xs font-bold uppercase tracking-wider text-pink-500">
+              <p className="text-xs font-bold uppercase tracking-wider text-[var(--accent)]">
                 Care Window
               </p>
 
-              <h2 className="mt-1 text-lg font-bold text-slate-900">
+              <h2 className="mt-1 text-lg font-bold text-[var(--app-foreground)]">
                 Supportive 5-day mode
               </h2>
 
-              <p className="mt-1 text-sm leading-5 text-slate-600">
+              <p className="mt-1 text-sm leading-5 text-[var(--app-muted-strong)]">
                 A gentler daily target during a
                 Care Window. Your task rewards
                 always remain at their full value.
               </p>
 
-              <div className="mt-4 rounded-2xl bg-white/70 p-3">
+              <div className="mt-4 rounded-2xl bg-[var(--app-surface)]/70 p-3">
                 <div className="grid grid-cols-5 gap-1 text-center">
                   {[
                     ["D1", "30%"],
@@ -720,11 +720,11 @@ export default function SettingsPage() {
                     ["D5", "70%"],
                   ].map(([day, percentage]) => (
                     <div key={day}>
-                      <p className="text-xs font-bold text-pink-500">
+                      <p className="text-xs font-bold text-[var(--accent)]">
                         {day}
                       </p>
 
-                      <p className="mt-1 text-xs text-slate-500">
+                      <p className="mt-1 text-xs text-[var(--app-muted-strong)]">
                         {percentage}
                       </p>
                     </div>
@@ -733,7 +733,7 @@ export default function SettingsPage() {
               </div>
 
               {careWindowActive ? (
-                <div className="mt-4 rounded-2xl bg-green-50 p-4">
+                <div className="mt-4 rounded-2xl bg-green-50 p-4 dark:bg-green-950/30">
                   <div className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
                       <Check className="h-4 w-4 text-green-600" />
@@ -759,12 +759,12 @@ export default function SettingsPage() {
               ) : cooldownActive &&
                 careWindow &&
                 nextAllowedDate ? (
-                <div className="mt-4 rounded-2xl bg-purple-50 p-4">
+                <div className="mt-4 rounded-2xl bg-[var(--accent-soft)] p-4 dark:bg-[var(--accent-soft)]">
                   <p className="text-sm font-bold text-purple-700">
                     Care Window cooling down
                   </p>
 
-                  <p className="mt-1 text-sm text-purple-600">
+                  <p className="mt-1 text-sm text-[var(--accent)]">
                     Next available:{" "}
                     {formatDate(
                       nextAllowedDate
@@ -789,14 +789,14 @@ export default function SettingsPage() {
                       startingCareWindow ||
                       loading
                     }
-                    className="mt-4 w-full rounded-2xl bg-gradient-to-r from-pink-500 to-purple-500 px-4 py-3 text-sm font-semibold text-white transition hover:opacity-95 disabled:cursor-wait disabled:opacity-50"
+                    className="mt-4 w-full rounded-2xl bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition hover:opacity-95 disabled:cursor-wait disabled:opacity-50"
                   >
                     {startingCareWindow
                       ? "Starting..."
                       : "Start Care Window"}
                   </button>
 
-                  <p className="mt-2 text-center text-xs text-slate-400">
+                  <p className="mt-2 text-center text-xs text-[var(--app-muted)]">
                     Starts today and lasts 5 days.
                   </p>
                 </>
@@ -806,24 +806,24 @@ export default function SettingsPage() {
         </section>
 
         {/* Game Rules */}
-        <section className="mt-6 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
-          <p className="text-xs font-semibold uppercase tracking-wider text-pink-500">
+        <section className="mt-6 rounded-3xl bg-[var(--app-surface)] p-5 shadow-sm ring-1 ring-[var(--app-border)]">
+          <p className="text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
             Game Rules
           </p>
 
           <div className="mt-4 space-y-4">
 
             <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-pink-50">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--accent-soft)]">
                 🎯
               </div>
 
               <div>
-                <p className="font-semibold text-slate-800">
+                <p className="font-semibold text-[var(--app-foreground)]">
                   Daily Target
                 </p>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-[var(--app-muted-strong)]">
                   Normally reach 80% of planned XP.
                   During a Care Window the required
                   percentage starts lower and rises
@@ -833,16 +833,16 @@ export default function SettingsPage() {
             </div>
 
             <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-50">
-                <Shield className="h-4 w-4 text-purple-500" />
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--accent-soft)]">
+                <Shield className="h-4 w-4 text-[var(--accent)]" />
               </div>
 
               <div>
-                <p className="font-semibold text-slate-800">
+                <p className="font-semibold text-[var(--app-foreground)]">
                   Streak Recovery
                 </p>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-[var(--app-muted-strong)]">
                   A future recovery mechanic for
                   restoring a meaningful streak after
                   a missed day.
@@ -851,16 +851,16 @@ export default function SettingsPage() {
             </div>
 
             <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-yellow-50">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--app-background)]">
                 📅
               </div>
 
               <div>
-                <p className="font-semibold text-slate-800">
+                <p className="font-semibold text-[var(--app-foreground)]">
                   Weekly Planning
                 </p>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-[var(--app-muted-strong)]">
                   Your planning week runs from Monday
                   through Sunday.
                 </p>
@@ -871,16 +871,16 @@ export default function SettingsPage() {
         </section>
 
         {/* Account */}
-        <section className="mt-6 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
-          <p className="text-xs font-semibold uppercase tracking-wider text-pink-500">
+        <section className="mt-6 rounded-3xl bg-[var(--app-surface)] p-5 shadow-sm ring-1 ring-[var(--app-border)]">
+          <p className="text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
             Account
           </p>
 
-          <h2 className="mt-1 text-lg font-bold text-slate-900">
+          <h2 className="mt-1 text-lg font-bold text-[var(--app-foreground)]">
             Session
           </h2>
 
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-[var(--app-muted-strong)]">
             Log out of this device when you are finished.
           </p>
 
@@ -898,7 +898,7 @@ export default function SettingsPage() {
         </section>
 
         <div className="mt-8 text-center">
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-[var(--app-muted)]">
             One quest at a time 💕
           </p>
         </div>

@@ -581,7 +581,7 @@ export default function StatsPage() {
     );
 
   return (
-    <main className="min-h-screen bg-[#fff8fb] text-slate-800">
+    <main className="min-h-screen bg-[#fff8fb] text-slate-800 dark:bg-[var(--app-background)] dark:text-[var(--app-foreground)]">
       <div className="mx-auto min-h-screen max-w-md px-5 pb-28">
 
         {/* Header */}
@@ -590,36 +590,44 @@ export default function StatsPage() {
             onClick={() =>
               router.push("/")
             }
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-slate-100"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-slate-100 dark:bg-[var(--app-surface)] dark:ring-[var(--app-border)]"
           >
-            <ChevronLeft className="h-5 w-5 text-slate-600" />
+            <ChevronLeft className="h-5 w-5 text-slate-600 dark:text-[var(--app-muted-strong)] dark:text-[var(--app-muted-strong)]" />
           </button>
 
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-pink-500">
+          <div className="flex-1">
+            <p className="text-xs font-semibold uppercase tracking-wider text-pink-500 dark:text-[var(--accent)]">
               Your Progress
             </p>
 
-            <h1 className="text-2xl font-bold text-slate-900">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-[var(--app-foreground)]">
               Stats 📊
             </h1>
           </div>
+
+          <button
+            onClick={() => router.push("/achievements")}
+            className="flex h-10 items-center gap-2 rounded-full bg-purple-50 px-4 text-sm font-semibold text-purple-600 ring-1 ring-purple-100 transition hover:bg-purple-100 active:scale-95 dark:bg-[var(--accent-soft)] dark:text-[var(--accent)] dark:ring-[var(--accent-light)] dark:hover:opacity-90"
+          >
+            <Trophy className="h-4 w-4" />
+            Achievements
+          </button>
         </header>
 
         {/* Main Stats */}
         <section className="mt-6 grid grid-cols-2 gap-3">
 
           {/* Lifetime XP */}
-          <div className="rounded-3xl bg-gradient-to-br from-pink-100 to-purple-100 p-5 shadow-sm ring-1 ring-pink-100">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/80">
+          <div className="rounded-3xl bg-gradient-to-br from-pink-100 to-purple-100 p-5 shadow-sm ring-1 ring-pink-100 dark:bg-none dark:bg-[var(--app-surface)] dark:ring-[var(--app-border)]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/80 dark:bg-[var(--app-surface)]/80">
               <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
             </div>
 
-            <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[var(--app-muted-strong)]">
               Lifetime XP
             </p>
 
-            <p className="mt-1 text-2xl font-bold text-slate-900">
+            <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-[var(--app-foreground)]">
               {loading
                 ? "..."
                 : lifetimeXp.toLocaleString()}
@@ -627,16 +635,16 @@ export default function StatsPage() {
           </div>
 
           {/* Lifetime Coins Earned */}
-          <div className="rounded-3xl bg-gradient-to-br from-orange-50 to-yellow-50 p-5 shadow-sm ring-1 ring-orange-100">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/80">
+          <div className="rounded-3xl bg-gradient-to-br from-orange-50 to-yellow-50 p-5 shadow-sm ring-1 ring-orange-100 dark:bg-none dark:bg-[var(--app-surface)] dark:ring-[var(--app-border)]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/80 dark:bg-[var(--app-surface)]/80">
               <Coins className="h-5 w-5 text-orange-400" />
             </div>
 
-            <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[var(--app-muted-strong)]">
               Coins Earned
             </p>
 
-            <p className="mt-1 text-2xl font-bold text-slate-900">
+            <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-[var(--app-foreground)]">
               {loading
                 ? "..."
                 : coinsEarned.toLocaleString()}
@@ -644,42 +652,42 @@ export default function StatsPage() {
           </div>
 
           {/* Current Streak */}
-          <div className="rounded-3xl bg-gradient-to-br from-orange-50 to-pink-50 p-5 shadow-sm ring-1 ring-orange-100">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/80">
+          <div className="rounded-3xl bg-gradient-to-br from-orange-50 to-pink-50 p-5 shadow-sm ring-1 ring-orange-100 dark:bg-none dark:bg-[var(--app-surface)] dark:ring-[var(--app-border)]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/80 dark:bg-[var(--app-surface)]/80">
               <Flame className="h-5 w-5 fill-orange-400 text-orange-400" />
             </div>
 
-            <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[var(--app-muted-strong)]">
               Current Streak
             </p>
 
-            <p className="mt-1 text-2xl font-bold text-slate-900">
+            <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-[var(--app-foreground)]">
               {loading
                 ? "..."
                 : currentStreak}
 
-              <span className="ml-1 text-sm font-medium text-slate-400">
+              <span className="ml-1 text-sm font-medium text-slate-400 dark:text-[var(--app-muted)]">
                 days
               </span>
             </p>
           </div>
 
           {/* Longest Streak */}
-          <div className="rounded-3xl bg-gradient-to-br from-purple-50 to-blue-50 p-5 shadow-sm ring-1 ring-purple-100">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/80">
+          <div className="rounded-3xl bg-gradient-to-br from-purple-50 to-blue-50 p-5 shadow-sm ring-1 ring-purple-100 dark:bg-none dark:bg-[var(--app-surface)] dark:ring-[var(--app-border)]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/80 dark:bg-[var(--app-surface)]/80">
               <Trophy className="h-5 w-5 text-purple-500" />
             </div>
 
-            <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[var(--app-muted-strong)]">
               Longest Streak
             </p>
 
-            <p className="mt-1 text-2xl font-bold text-slate-900">
+            <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-[var(--app-foreground)]">
               {loading
                 ? "..."
                 : longestStreak}
 
-              <span className="ml-1 text-sm font-medium text-slate-400">
+              <span className="ml-1 text-sm font-medium text-slate-400 dark:text-[var(--app-muted)]">
                 days
               </span>
             </p>
@@ -687,19 +695,19 @@ export default function StatsPage() {
         </section>
 
         {/* Streak Milestones */}
-        <section className="mt-5 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+        <section className="mt-5 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100 dark:bg-[var(--app-surface)] dark:ring-[var(--app-border)]">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-orange-500">
                 Streak Rewards
               </p>
 
-              <h2 className="mt-1 text-xl font-bold text-slate-900">
+              <h2 className="mt-1 text-xl font-bold text-slate-900 dark:text-[var(--app-foreground)]">
                 Milestones 🔥
               </h2>
             </div>
 
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-orange-50">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-orange-50 dark:bg-[var(--app-surface)]">
               <Flame className="h-5 w-5 text-orange-500" />
             </div>
           </div>
@@ -714,7 +722,7 @@ export default function StatsPage() {
                   key={milestone.days}
                   className={`flex items-center justify-between rounded-2xl px-3 py-3 ${
                     reached
-                      ? "bg-orange-50"
+                      ? "bg-orange-50 dark:bg-[var(--app-surface)]"
                       : "bg-slate-50"
                   }`}
                 >
@@ -722,7 +730,7 @@ export default function StatsPage() {
                     <div
                       className={`flex h-8 w-8 items-center justify-center rounded-full ${
                         reached
-                          ? "bg-orange-100"
+                          ? "bg-orange-100 dark:bg-[var(--accent-soft)]"
                           : "bg-white"
                       }`}
                     >
@@ -734,13 +742,13 @@ export default function StatsPage() {
                         className={`text-sm font-semibold ${
                           reached
                             ? "text-orange-700"
-                            : "text-slate-700"
+                            : "text-slate-700 dark:text-[var(--app-muted-strong)]"
                         }`}
                       >
                         {milestone.days}-day streak
                       </p>
 
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-slate-400 dark:text-[var(--app-muted)]">
                         {reached
                           ? "Milestone reached"
                           : longestStreak > 0
@@ -758,7 +766,7 @@ export default function StatsPage() {
                     className={`text-sm font-bold ${
                       reached
                         ? "text-orange-500"
-                        : "text-slate-500"
+                        : "text-slate-500 dark:text-[var(--app-muted-strong)]"
                     }`}
                   >
                     +{milestone.coins} 🪙
@@ -768,39 +776,39 @@ export default function StatsPage() {
             })}
           </div>
 
-          <p className="mt-4 text-xs leading-5 text-slate-400">
+          <p className="mt-4 text-xs leading-5 text-slate-400 dark:text-[var(--app-muted)]">
             Milestone coins are awarded once when you
             reach each streak.
           </p>
         </section>
 
         {/* Task Summary */}
-        <section className="mt-5 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+        <section className="mt-5 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100 dark:bg-[var(--app-surface)] dark:ring-[var(--app-border)]">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-pink-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-pink-500 dark:text-[var(--accent)]">
                 All Time
               </p>
 
-              <h2 className="mt-1 text-xl font-bold text-slate-900">
+              <h2 className="mt-1 text-xl font-bold text-slate-900 dark:text-[var(--app-foreground)]">
                 Task Progress
               </h2>
             </div>
 
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-pink-50">
-              <ListTodo className="h-5 w-5 text-pink-500" />
+              <ListTodo className="h-5 w-5 text-pink-500 dark:text-[var(--accent)]" />
             </div>
           </div>
 
           <div className="mt-5 flex items-end justify-between">
             <div>
-              <p className="text-3xl font-bold text-slate-900">
+              <p className="text-3xl font-bold text-slate-900 dark:text-[var(--app-foreground)]">
                 {loading
                   ? "..."
                   : totalTasksCompleted}
               </p>
 
-              <p className="mt-1 text-sm text-slate-400">
+              <p className="mt-1 text-sm text-slate-400 dark:text-[var(--app-muted)]">
                 tasks completed
               </p>
             </div>
@@ -812,7 +820,7 @@ export default function StatsPage() {
                   : sevenDayXp}
               </p>
 
-              <p className="mt-1 text-sm text-slate-400">
+              <p className="mt-1 text-sm text-slate-400 dark:text-[var(--app-muted)]">
                 XP this week
               </p>
             </div>
@@ -820,13 +828,13 @@ export default function StatsPage() {
         </section>
 
         {/* XP Activity */}
-        <section className="mt-5 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+        <section className="mt-5 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100 dark:bg-[var(--app-surface)] dark:ring-[var(--app-border)]">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-pink-500">
+            <p className="text-xs font-semibold uppercase tracking-wider text-pink-500 dark:text-[var(--accent)]">
               Last 7 Days
             </p>
 
-            <h2 className="mt-1 text-xl font-bold text-slate-900">
+            <h2 className="mt-1 text-xl font-bold text-slate-900 dark:text-[var(--app-foreground)]">
               XP Activity
             </h2>
           </div>
@@ -883,12 +891,12 @@ export default function StatsPage() {
                     }
                   >
                     <div className="mb-2 flex items-center justify-between">
-                      <span className="w-10 text-xs font-semibold text-slate-500">
+                      <span className="w-10 text-xs font-semibold text-slate-500 dark:text-[var(--app-muted-strong)]">
                         {day.label}
                       </span>
 
                       <div className="flex items-center gap-3 text-xs">
-                        <span className="text-slate-400">
+                        <span className="text-slate-400 dark:text-[var(--app-muted)]">
                           {day.earnedXp} / {day.plannedXp} XP
                         </span>
 
@@ -908,9 +916,9 @@ export default function StatsPage() {
 
                     <div className="space-y-1">
                       {/* Planned */}
-                      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+                      <div className="h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-[var(--app-border)]">
                         <div
-                          className="h-full rounded-full bg-slate-200"
+                          className="h-full rounded-full bg-slate-200 dark:bg-[var(--app-border)]"
                           style={{
                             width: `${plannedWidth}%`,
                           }}
@@ -918,7 +926,7 @@ export default function StatsPage() {
                       </div>
 
                       {/* Earned */}
-                      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+                      <div className="h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-[var(--app-border)]">
                         <div
                           className="h-full rounded-full bg-pink-400 transition-all duration-500"
                           style={{
@@ -933,9 +941,9 @@ export default function StatsPage() {
             )}
           </div>
 
-          <div className="mt-5 flex items-center justify-center gap-5 text-xs text-slate-400">
+          <div className="mt-5 flex items-center justify-center gap-5 text-xs text-slate-400 dark:text-[var(--app-muted)]">
             <div className="flex items-center gap-2">
-              <span className="h-2 w-5 rounded-full bg-slate-200" />
+              <span className="h-2 w-5 rounded-full bg-slate-200 dark:bg-[var(--app-border)]" />
               Planned
             </div>
 
@@ -947,32 +955,32 @@ export default function StatsPage() {
         </section>
 
         {/* Streak Explanation */}
-        <section className="mt-5 rounded-3xl bg-gradient-to-br from-orange-50 to-pink-50 p-5 ring-1 ring-orange-100">
+        <section className="mt-5 rounded-3xl bg-gradient-to-br from-orange-50 to-pink-50 p-5 ring-1 ring-orange-100 dark:bg-none dark:bg-[var(--app-surface)] dark:ring-[var(--app-border)]">
           <div className="flex items-start gap-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/80">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/80 dark:bg-[var(--app-surface)]/80">
               <Flame className="h-5 w-5 fill-orange-400 text-orange-400" />
             </div>
 
             <div>
-              <p className="font-bold text-slate-900">
+              <p className="font-bold text-slate-900 dark:text-[var(--app-foreground)]">
                 Keep your streak alive 🔥
               </p>
 
-              <p className="mt-1 text-sm leading-5 text-slate-500">
+              <p className="mt-1 text-sm leading-5 text-slate-500 dark:text-[var(--app-muted-strong)]">
                 Reach the required share
                 of your planned XP on a
                 planned day to count it
                 toward your streak.
               </p>
 
-              <p className="mt-2 text-xs font-medium text-slate-400">
+              <p className="mt-2 text-xs font-medium text-slate-400 dark:text-[var(--app-muted)]">
                 Normal days require 80%.
                 During a Care Window,
                 the requirement is 30%,
                 40%, 50%, 60%, then 70%.
               </p>
 
-              <p className="mt-2 text-xs font-medium text-slate-400">
+              <p className="mt-2 text-xs font-medium text-slate-400 dark:text-[var(--app-muted)]">
                 Days with no planned tasks
                 are simply ignored.
               </p>
@@ -982,7 +990,7 @@ export default function StatsPage() {
       </div>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-100 bg-white/95 backdrop-blur">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-100 bg-white/95 backdrop-blur dark:border-[var(--app-border)] dark:bg-[var(--app-surface)]/95">
         <div className="mx-auto flex max-w-md items-center justify-around px-3 py-3">
 
           <NavItem
@@ -1059,8 +1067,8 @@ function NavItem({
       onClick={onClick}
       className={`flex min-w-[58px] flex-col items-center gap-1 text-xs font-medium transition ${
         active
-          ? "text-pink-500"
-          : "text-slate-400 hover:text-pink-400"
+          ? "text-pink-500 dark:text-[var(--accent)]"
+          : "text-slate-400 dark:text-[var(--app-muted)] hover:text-pink-400"
       }`}
     >
       <div className="h-5 w-5">
