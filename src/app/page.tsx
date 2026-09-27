@@ -45,6 +45,14 @@ type CareWindow = {
   end_date: string;
 };
 
+type StreakRecovery = {
+  id: string;
+  lost_streak: number;
+  missed_date: string;
+  recovery_cost: number;
+  expires_at: string;
+};
+
 export default function Home() {
   const router = useRouter();
 
@@ -70,6 +78,13 @@ export default function Home() {
 
   const [careWindow, setCareWindow] =
     useState<CareWindow | null>(null);
+
+  const [streakRecovery, setStreakRecovery] =
+    useState<StreakRecovery | null>(null);
+  const [recoveringStreak, setRecoveringStreak] =
+    useState(false);
+  const [recoveryMessage, setRecoveryMessage] =
+    useState("");
 
   function getTodayString() {
     const today = new Date();
@@ -188,9 +203,126 @@ export default function Home() {
       return;
     }
 
-    if (data) {
-      setStreak(data.current_streak ?? 0);
+    if (!data) {
+      return;
     }
+
+    const currentStreak =
+      Number(data.current_streak ?? 0);
+
+    const longestStreak =
+      Number(data.longest_streak ?? currentStreak);
+
+    setStreak(currentStreak);
+
+    /*
+      Award every streak milestone that has been reached.
+      We use the highest historical streak as well, so a
+      previously reached milestone cannot be missed just
+      because the current streak was later reset.
+      The database reward_key prevents duplicates.
+    */
+    const milestoneStreak = Math.max(
+      currentStreak,
+      longestStreak
+    );
+
+    const {
+      data: milestoneData,
+      error: milestoneError,
+    } = await supabase.rpc(
+      "award_streak_milestone",
+      {
+        p_streak: milestoneStreak,
+      }
+    );
+
+    if (milestoneError) {
+      console.error(
+        "Streak milestone error:",
+        milestoneError
+      );
+    } else if (
+      milestoneData?.awarded &&
+      Number(milestoneData.coins) > 0
+    ) {
+      setCoins((current) =>
+        current + Number(milestoneData.coins)
+      );
+    }
+
+    /*
+      Check all achievement conditions after streak/XP/task
+      state has been refreshed. Each achievement is protected
+      by the unique user_achievements constraint and therefore
+      can only be unlocked once.
+    */
+    const {
+      data: achievementData,
+      error: achievementError,
+    } = await supabase.rpc(
+      "check_and_award_achievements"
+    );
+
+    if (achievementError) {
+      console.error(
+        "Achievement check error:",
+        achievementError
+      );
+    } else if (
+      achievementData?.unlocked?.length
+    ) {
+      console.log(
+        "Achievements unlocked:",
+        achievementData.unlocked
+      );
+    }
+  }
+
+  async function refreshStreakRecovery() {
+    setRecoveryMessage("");
+
+    const { data: recoveryResult, error: recoveryCreateError } =
+      await supabase.rpc(
+        "create_streak_recovery_if_needed"
+      );
+
+    if (recoveryCreateError) {
+      console.error(
+        "Create streak recovery error:",
+        recoveryCreateError
+      );
+    } else {
+      console.log(
+        "Streak recovery check:",
+        recoveryResult
+      );
+    }
+
+    const {
+      data: recovery,
+      error: recoveryLoadError,
+    } = await supabase
+      .from("streak_recoveries")
+      .select(
+        "id, lost_streak, missed_date, recovery_cost, expires_at"
+      )
+      .eq("recovered", false)
+      .gt("expires_at", new Date().toISOString())
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (recoveryLoadError) {
+      console.error(
+        "Load streak recovery error:",
+        recoveryLoadError
+      );
+      setStreakRecovery(null);
+      return;
+    }
+
+    setStreakRecovery(recovery ?? null);
   }
 
   async function refreshDailyGoal() {
@@ -312,6 +444,9 @@ export default function Home() {
 
     // Update streak from the authenticated user session
     await refreshStreak();
+
+    // Check whether a broken streak can be recovered.
+    await refreshStreakRecovery();
 
     // Check daily goal and award daily bonus
     await refreshDailyGoal();
@@ -561,6 +696,77 @@ export default function Home() {
     setActionTaskId(null);
   }
 
+  async function restoreStreak() {
+    if (!streakRecovery || recoveringStreak) {
+      return;
+    }
+
+    setRecoveringStreak(true);
+    setRecoveryMessage("");
+
+    const { data, error } =
+      await supabase.rpc("restore_streak");
+
+    if (error) {
+      console.error(
+        "Restore streak error:",
+        error
+      );
+
+      setRecoveryMessage(
+        error.message ||
+          "Could not restore your streak. Please try again."
+      );
+
+      setRecoveringStreak(false);
+      return;
+    }
+
+    if (!data?.success) {
+      if (data?.reason === "insufficient_coins") {
+        setRecoveryMessage(
+          `You need ${data.required ?? streakRecovery.recovery_cost} coins, but only have ${data.balance ?? coins}.`
+        );
+      } else if (data?.reason === "no_active_recovery") {
+        setRecoveryMessage(
+          "This recovery is no longer available."
+        );
+        setStreakRecovery(null);
+      } else if (data?.reason === "already_recovered") {
+        setRecoveryMessage(
+          "This streak has already been restored."
+        );
+        setStreakRecovery(null);
+      } else {
+        setRecoveryMessage(
+          "Streak recovery could not be completed."
+        );
+      }
+
+      setRecoveringStreak(false);
+      return;
+    }
+
+    setCoins(data.new_balance ?? coins);
+    setStreak(data.current_streak ?? streak);
+    setStreakRecovery(null);
+    setRecoveryMessage("");
+    setRecoveringStreak(false);
+  }
+
+  function formatRecoveryExpiry(
+    expiresAt: string
+  ) {
+    const expiry = new Date(expiresAt);
+
+    return expiry.toLocaleString("en-IN", {
+      day: "numeric",
+      month: "short",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  }
+
   async function toggleCompletionTask(task: Task) {
     if (completedTaskIds.includes(task.id)) {
       return;
@@ -772,6 +978,54 @@ export default function Home() {
             </section>
           );
         })()}
+
+        {streakRecovery && (
+          <section className="mt-4 rounded-3xl bg-gradient-to-r from-orange-50 to-pink-50 p-4 shadow-sm ring-1 ring-orange-100">
+            <div className="flex items-start gap-3">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/80 text-xl">
+                🔥
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-bold uppercase tracking-wider text-orange-500">
+                  Streak Recovery
+                </p>
+
+                <p className="mt-1 text-base font-bold text-slate-900">
+                  Your {streakRecovery.lost_streak}-day streak was broken
+                </p>
+
+                <p className="mt-1 text-sm leading-5 text-slate-600">
+                  Restore the streak by spending {streakRecovery.recovery_cost.toLocaleString()} 🪙. The missed day&apos;s task rewards are not restored.
+                </p>
+
+                <div className="mt-3 rounded-2xl bg-white/70 px-3 py-2">
+                  <p className="text-xs text-slate-500">
+                    Recovery expires: {formatRecoveryExpiry(streakRecovery.expires_at)}
+                  </p>
+                </div>
+
+                <button
+                  onClick={restoreStreak}
+                  disabled={recoveringStreak || coins < streakRecovery.recovery_cost}
+                  className="mt-3 w-full rounded-2xl bg-gradient-to-r from-orange-400 to-pink-500 px-4 py-3 text-sm font-semibold text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {recoveringStreak
+                    ? "Restoring..."
+                    : coins < streakRecovery.recovery_cost
+                      ? `Need ${streakRecovery.recovery_cost - coins} more coins`
+                      : `Restore ${streakRecovery.lost_streak}-day streak`}
+                </button>
+
+                {recoveryMessage && (
+                  <p className="mt-2 text-xs font-medium text-red-500">
+                    {recoveryMessage}
+                  </p>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Daily Progress */}
         <section className="mt-5 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">

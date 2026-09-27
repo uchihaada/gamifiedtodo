@@ -134,14 +134,14 @@ export default function SettingsPage() {
     setDisplayName(name);
     setOriginalName(name);
 
-    await loadCareWindow(user.id);
+    await loadLatestCareWindow(user.id);
 
     setLoading(false);
   }
 
-  async function loadCareWindow(userId: string) {
-    const today = getTodayString();
-
+  async function loadLatestCareWindow(
+    userId: string
+  ) {
     const {
       data,
       error,
@@ -149,8 +149,6 @@ export default function SettingsPage() {
       .from("care_windows")
       .select("id, start_date, end_date")
       .eq("user_id", userId)
-      .lte("start_date", today)
-      .gte("end_date", today)
       .order("start_date", {
         ascending: false,
       })
@@ -172,11 +170,38 @@ export default function SettingsPage() {
     const now = new Date();
 
     const year = now.getFullYear();
+
     const month = String(
       now.getMonth() + 1
     ).padStart(2, "0");
+
     const day = String(
       now.getDate()
+    ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
+
+  function addDays(
+    dateString: string,
+    amount: number
+  ) {
+    const date = new Date(
+      `${dateString}T00:00:00`
+    );
+
+    date.setDate(
+      date.getDate() + amount
+    );
+
+    const year = date.getFullYear();
+
+    const month = String(
+      date.getMonth() + 1
+    ).padStart(2, "0");
+
+    const day = String(
+      date.getDate()
     ).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
@@ -185,7 +210,9 @@ export default function SettingsPage() {
   function formatDate(
     dateString: string | null
   ) {
-    if (!dateString) return "";
+    if (!dateString) {
+      return "";
+    }
 
     const date = new Date(
       `${dateString}T00:00:00`
@@ -198,6 +225,27 @@ export default function SettingsPage() {
         month: "short",
         year: "numeric",
       }
+    );
+  }
+
+  function getDaysUntil(
+    dateString: string
+  ) {
+    const today = new Date(
+      `${getTodayString()}T00:00:00`
+    );
+
+    const target = new Date(
+      `${dateString}T00:00:00`
+    );
+
+    return Math.max(
+      0,
+      Math.ceil(
+        (target.getTime() -
+          today.getTime()) /
+          (1000 * 60 * 60 * 24)
+      )
     );
   }
 
@@ -214,7 +262,8 @@ export default function SettingsPage() {
     } = await supabase.rpc(
       "start_care_window",
       {
-        p_start_date: todayString,
+        p_start_date:
+          todayString,
       }
     );
 
@@ -243,7 +292,7 @@ export default function SettingsPage() {
 
       setErrorMessage(
         detailedError ||
-          "Unknown error starting Care Window."
+          "Could not start Care Window."
       );
 
       setStartingCareWindow(false);
@@ -251,17 +300,21 @@ export default function SettingsPage() {
     }
 
     if (!data?.success) {
-      console.error(
-        "Start Care Window failed:",
-        JSON.stringify(data)
-      );
-
       if (
         data?.reason ===
-        "overlapping_window"
+        "active_window"
       ) {
         setErrorMessage(
           "You already have an active Care Window."
+        );
+      } else if (
+        data?.reason ===
+        "cooldown"
+      ) {
+        setErrorMessage(
+          `Care Window is available again on ${formatDate(
+            data.next_allowed_date
+          )}.`
         );
       } else {
         setErrorMessage(
@@ -310,7 +363,8 @@ export default function SettingsPage() {
       await supabase
         .from("profiles")
         .update({
-          display_name: trimmedName,
+          display_name:
+            trimmedName,
         })
         .eq("id", user.id);
 
@@ -378,8 +432,35 @@ export default function SettingsPage() {
     displayName.trim() !==
     originalName;
 
+  const today = getTodayString();
+
   const careWindowActive =
-    careWindow !== null;
+    careWindow !== null &&
+    careWindow.start_date <= today &&
+    !!careWindow.end_date &&
+    careWindow.end_date >= today;
+
+  const nextAllowedDate =
+    careWindow !== null
+      ? addDays(
+          careWindow.start_date,
+          21
+        )
+      : null;
+
+  const cooldownActive =
+    careWindow !== null &&
+    !careWindowActive &&
+    nextAllowedDate !== null &&
+    today < nextAllowedDate;
+
+  const cooldownDays =
+    cooldownActive &&
+    nextAllowedDate
+      ? getDaysUntil(
+          nextAllowedDate
+        )
+      : 0;
 
   return (
     <main className="min-h-screen bg-[#fff8fb] text-slate-800">
@@ -489,7 +570,6 @@ export default function SettingsPage() {
             Make it yours 🎨
           </h2>
 
-          {/* Theme */}
           <div className="mt-5">
             <p className="text-sm font-semibold text-slate-700">
               Theme color
@@ -535,7 +615,6 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Appearance mode */}
           <div className="mt-6">
             <p className="text-sm font-semibold text-slate-700">
               Appearance
@@ -549,8 +628,7 @@ export default function SettingsPage() {
                   )
                 }
                 className={`flex flex-col items-center gap-2 rounded-2xl border p-3 transition ${
-                  appearance ===
-                  "light"
+                  appearance === "light"
                     ? "border-pink-300 bg-pink-50 ring-2 ring-pink-100"
                     : "border-slate-100 bg-slate-50"
                 }`}
@@ -569,8 +647,7 @@ export default function SettingsPage() {
                   )
                 }
                 className={`flex flex-col items-center gap-2 rounded-2xl border p-3 transition ${
-                  appearance ===
-                  "dark"
+                  appearance === "dark"
                     ? "border-pink-300 bg-pink-50 ring-2 ring-pink-100"
                     : "border-slate-100 bg-slate-50"
                 }`}
@@ -589,8 +666,7 @@ export default function SettingsPage() {
                   )
                 }
                 className={`flex flex-col items-center gap-2 rounded-2xl border p-3 transition ${
-                  appearance ===
-                  "system"
+                  appearance === "system"
                     ? "border-pink-300 bg-pink-50 ring-2 ring-pink-100"
                     : "border-slate-100 bg-slate-50"
                 }`}
@@ -629,66 +705,36 @@ export default function SettingsPage() {
               </h2>
 
               <p className="mt-1 text-sm leading-5 text-slate-600">
-                A gentler reward period designed
-                to reduce pressure while keeping
-                your overall progress moving forward.
+                A gentler daily target during a
+                Care Window. Your task rewards
+                always remain at their full value.
               </p>
 
               <div className="mt-4 rounded-2xl bg-white/70 p-3">
                 <div className="grid grid-cols-5 gap-1 text-center">
+                  {[
+                    ["D1", "30%"],
+                    ["D2", "40%"],
+                    ["D3", "50%"],
+                    ["D4", "60%"],
+                    ["D5", "70%"],
+                  ].map(([day, percentage]) => (
+                    <div key={day}>
+                      <p className="text-xs font-bold text-pink-500">
+                        {day}
+                      </p>
 
-                  <div>
-                    <p className="text-xs font-bold text-pink-500">
-                      D1
-                    </p>
-                    <p className="mt-1 text-xs text-slate-500">
-                      30%
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs font-bold text-pink-500">
-                      D2
-                    </p>
-                    <p className="mt-1 text-xs text-slate-500">
-                      40%
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs font-bold text-pink-500">
-                      D3
-                    </p>
-                    <p className="mt-1 text-xs text-slate-500">
-                      50%
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs font-bold text-pink-500">
-                      D4
-                    </p>
-                    <p className="mt-1 text-xs text-slate-500">
-                      60%
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs font-bold text-pink-500">
-                      D5
-                    </p>
-                    <p className="mt-1 text-xs text-slate-500">
-                      70%
-                    </p>
-                  </div>
-
+                      <p className="mt-1 text-xs text-slate-500">
+                        {percentage}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
 
               {careWindowActive ? (
                 <div className="mt-4 rounded-2xl bg-green-50 p-4">
                   <div className="flex items-center gap-2">
-
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
                       <Check className="h-4 w-4 text-green-600" />
                     </div>
@@ -700,18 +746,38 @@ export default function SettingsPage() {
 
                       <p className="text-xs text-green-600">
                         {formatDate(
-                          careWindow?.start_date ??
-                            null
+                          careWindow.start_date
                         )}{" "}
                         →{" "}
                         {formatDate(
-                          careWindow?.end_date ??
-                            null
+                          careWindow.end_date
                         )}
                       </p>
                     </div>
-
                   </div>
+                </div>
+              ) : cooldownActive &&
+                careWindow &&
+                nextAllowedDate ? (
+                <div className="mt-4 rounded-2xl bg-purple-50 p-4">
+                  <p className="text-sm font-bold text-purple-700">
+                    Care Window cooling down
+                  </p>
+
+                  <p className="mt-1 text-sm text-purple-600">
+                    Next available:{" "}
+                    {formatDate(
+                      nextAllowedDate
+                    )}
+                  </p>
+
+                  <p className="mt-1 text-xs text-purple-400">
+                    Available in{" "}
+                    {cooldownDays}{" "}
+                    {cooldownDays === 1
+                      ? "day"
+                      : "days"}
+                  </p>
                 </div>
               ) : (
                 <>
@@ -758,9 +824,10 @@ export default function SettingsPage() {
                 </p>
 
                 <p className="mt-1 text-sm text-slate-500">
-                  Normally reach 80% of your planned
-                  XP. During a Care Window, the required
-                  percentage gradually starts lower.
+                  Normally reach 80% of planned XP.
+                  During a Care Window the required
+                  percentage starts lower and rises
+                  gradually.
                 </p>
               </div>
             </div>
@@ -772,12 +839,13 @@ export default function SettingsPage() {
 
               <div>
                 <p className="font-semibold text-slate-800">
-                  Streak Shield
+                  Streak Recovery
                 </p>
 
                 <p className="mt-1 text-sm text-slate-500">
-                  A future protection mechanic for
-                  your streak. No punishment or negative XP.
+                  A future recovery mechanic for
+                  restoring a meaningful streak after
+                  a missed day.
                 </p>
               </div>
             </div>
@@ -822,6 +890,7 @@ export default function SettingsPage() {
             className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-500 transition hover:bg-red-100 disabled:cursor-wait disabled:opacity-60"
           >
             <LogOut className="h-4 w-4" />
+
             {loggingOut
               ? "Logging out..."
               : "Log Out"}

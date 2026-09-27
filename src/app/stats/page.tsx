@@ -29,6 +29,11 @@ type DayStat = {
   earnedXp: number;
 };
 
+type CareWindow = {
+  start_date: string;
+  end_date: string;
+};
+
 function getIndiaToday(): string {
   const now = new Date();
 
@@ -112,11 +117,66 @@ function getDifficultyXp(
   }
 }
 
+function getCareTargetMultiplier(
+  dateString: string,
+  careWindows: CareWindow[]
+): number {
+  const careWindow = careWindows
+    .slice()
+    .sort((a, b) =>
+      b.start_date.localeCompare(a.start_date)
+    )
+    .find(
+      (window) =>
+        window.start_date <= dateString &&
+        window.end_date >= dateString
+    );
+
+  if (!careWindow) {
+    return 0.8;
+  }
+
+  const start = new Date(
+    `${careWindow.start_date}T00:00:00Z`
+  );
+
+  const current = new Date(
+    `${dateString}T00:00:00Z`
+  );
+
+  const day =
+    Math.floor(
+      (current.getTime() - start.getTime()) /
+        (1000 * 60 * 60 * 24)
+    ) + 1;
+
+  const careMultipliers = [
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+  ];
+
+  return careMultipliers[day - 1] ?? 0.8;
+}
+
+const streakMilestones = [
+  { days: 5, coins: 20 },
+  { days: 7, coins: 30 },
+  { days: 10, coins: 40 },
+  { days: 14, coins: 50 },
+  { days: 20, coins: 70 },
+  { days: 30, coins: 100 },
+  { days: 45, coins: 150 },
+  { days: 60, coins: 250 },
+];
+
 export default function StatsPage() {
   const router = useRouter();
 
   const [lifetimeXp, setLifetimeXp] = useState(0);
-  const [coins, setCoins] = useState(0);
+  const [coinsEarned, setCoinsEarned] = useState(0);
   const [currentStreak, setCurrentStreak] =
     useState(0);
   const [longestStreak, setLongestStreak] =
@@ -129,6 +189,9 @@ export default function StatsPage() {
 
   const [sevenDayStats, setSevenDayStats] =
     useState<DayStat[]>([]);
+
+  const [careWindows, setCareWindows] =
+    useState<CareWindow[]>([]);
 
   const [loading, setLoading] = useState(true);
 
@@ -201,15 +264,18 @@ export default function StatsPage() {
       );
     }
 
-    const coinBalance =
+    const lifetimeCoinsEarned =
       coinTransactions?.reduce(
-        (total, transaction) =>
-          total +
-          Number(transaction.amount),
+        (total, transaction) => {
+          const amount = Number(transaction.amount);
+          return amount > 0
+            ? total + amount
+            : total;
+        },
         0
       ) ?? 0;
 
-    setCoins(coinBalance);
+    setCoinsEarned(lifetimeCoinsEarned);
 
     /*
       ============================
@@ -295,6 +361,36 @@ export default function StatsPage() {
       "to",
       lastDate
     );
+
+    /*
+      ============================
+      CARE WINDOWS
+      ============================
+
+      Load any Care Window that overlaps
+      the last 7-day chart period.
+    */
+
+    const {
+      data: careWindowRows,
+      error: careWindowError,
+    } = await supabase
+      .from("care_windows")
+      .select("start_date, end_date")
+      .eq("user_id", user.id)
+      .lte("start_date", lastDate)
+      .gte("end_date", firstDate)
+      .order("start_date", { ascending: false });
+
+    if (careWindowError) {
+      console.error(
+        "Care Window error:",
+        careWindowError
+      );
+      setCareWindows([]);
+    } else {
+      setCareWindows(careWindowRows ?? []);
+    }
 
     /*
       ============================
@@ -530,20 +626,20 @@ export default function StatsPage() {
             </p>
           </div>
 
-          {/* Coins */}
+          {/* Lifetime Coins Earned */}
           <div className="rounded-3xl bg-gradient-to-br from-orange-50 to-yellow-50 p-5 shadow-sm ring-1 ring-orange-100">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/80">
               <Coins className="h-5 w-5 text-orange-400" />
             </div>
 
             <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Coins
+              Coins Earned
             </p>
 
             <p className="mt-1 text-2xl font-bold text-slate-900">
               {loading
                 ? "..."
-                : coins.toLocaleString()}
+                : coinsEarned.toLocaleString()}
             </p>
           </div>
 
@@ -588,6 +684,94 @@ export default function StatsPage() {
               </span>
             </p>
           </div>
+        </section>
+
+        {/* Streak Milestones */}
+        <section className="mt-5 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-orange-500">
+                Streak Rewards
+              </p>
+
+              <h2 className="mt-1 text-xl font-bold text-slate-900">
+                Milestones 🔥
+              </h2>
+            </div>
+
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-orange-50">
+              <Flame className="h-5 w-5 text-orange-500" />
+            </div>
+          </div>
+
+          <div className="mt-4 space-y-2">
+            {streakMilestones.map((milestone) => {
+              const reached =
+                longestStreak >= milestone.days;
+
+              return (
+                <div
+                  key={milestone.days}
+                  className={`flex items-center justify-between rounded-2xl px-3 py-3 ${
+                    reached
+                      ? "bg-orange-50"
+                      : "bg-slate-50"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`flex h-8 w-8 items-center justify-center rounded-full ${
+                        reached
+                          ? "bg-orange-100"
+                          : "bg-white"
+                      }`}
+                    >
+                      {reached ? "✓" : "🔥"}
+                    </div>
+
+                    <div>
+                      <p
+                        className={`text-sm font-semibold ${
+                          reached
+                            ? "text-orange-700"
+                            : "text-slate-700"
+                        }`}
+                      >
+                        {milestone.days}-day streak
+                      </p>
+
+                      <p className="text-xs text-slate-400">
+                        {reached
+                          ? "Milestone reached"
+                          : longestStreak > 0
+                            ? `${Math.max(
+                                milestone.days -
+                                  longestStreak,
+                                0
+                              )} more days to go`
+                            : "Start your streak"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <span
+                    className={`text-sm font-bold ${
+                      reached
+                        ? "text-orange-500"
+                        : "text-slate-500"
+                    }`}
+                  >
+                    +{milestone.coins} 🪙
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          <p className="mt-4 text-xs leading-5 text-slate-400">
+            Milestone coins are awarded once when you
+            reach each streak.
+          </p>
         </section>
 
         {/* Task Summary */}
@@ -672,12 +856,18 @@ export default function StatsPage() {
                       : 0
                   );
 
+                const targetMultiplier =
+                  getCareTargetMultiplier(
+                    day.date,
+                    careWindows
+                  );
+
                 const target =
                   day.plannedXp >
                   0
                     ? Math.floor(
                         day.plannedXp *
-                          0.8
+                          targetMultiplier
                       )
                     : 0;
 
@@ -699,15 +889,14 @@ export default function StatsPage() {
 
                       <div className="flex items-center gap-3 text-xs">
                         <span className="text-slate-400">
-                          {
-                            day.earnedXp
-                          }{" "}
-                          /{" "}
-                          {
-                            day.plannedXp
-                          }{" "}
-                          XP
+                          {day.earnedXp} / {day.plannedXp} XP
                         </span>
+
+                        {day.plannedXp > 0 && (
+                          <span className="text-slate-300">
+                            Target {target}
+                          </span>
+                        )}
 
                         {goalReached && (
                           <span className="font-semibold text-green-500">
@@ -770,17 +959,22 @@ export default function StatsPage() {
               </p>
 
               <p className="mt-1 text-sm leading-5 text-slate-500">
-                Reach at least 80%
-                of your planned XP
-                on a planned day to
-                count it toward your
-                streak.
+                Reach the required share
+                of your planned XP on a
+                planned day to count it
+                toward your streak.
               </p>
 
               <p className="mt-2 text-xs font-medium text-slate-400">
-                Days with no planned
-                tasks are simply
-                ignored.
+                Normal days require 80%.
+                During a Care Window,
+                the requirement is 30%,
+                40%, 50%, 60%, then 70%.
+              </p>
+
+              <p className="mt-2 text-xs font-medium text-slate-400">
+                Days with no planned tasks
+                are simply ignored.
               </p>
             </div>
           </div>
