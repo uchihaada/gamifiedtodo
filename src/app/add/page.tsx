@@ -16,6 +16,7 @@ type Category =
   | "Other";
 
 type Difficulty = "easy" | "medium" | "hard";
+type DurationUnit = "minutes" | "hours";
 
 const DAYS = [
   { label: "M", name: "Monday", value: 1 },
@@ -101,6 +102,8 @@ export default function AddPage() {
     useState<Category>("Study");
   const [subject, setSubject] = useState("");
   const [duration, setDuration] = useState("60");
+  const [durationUnit, setDurationUnit] =
+    useState<DurationUnit>("minutes");
   const [difficulty, setDifficulty] =
     useState<Difficulty>("medium");
 
@@ -129,6 +132,14 @@ export default function AddPage() {
       };
     });
   }, [selectedDays, monday]);
+
+  const durationInputValue = Number(duration);
+  const totalDurationMinutes =
+    Number.isFinite(durationInputValue) && durationInputValue > 0
+      ? Math.round(
+          durationInputValue * (durationUnit === "hours" ? 60 : 1)
+        )
+      : 0;
 
   const totalRewardXp =
     REWARDS[difficulty] * selectedDays.length;
@@ -177,9 +188,7 @@ export default function AddPage() {
     }
 
     if (taskType === "timed") {
-      const minutes = Number(duration);
-
-      if (!minutes || minutes <= 0) {
+      if (totalDurationMinutes <= 0) {
         setError("Please enter a valid duration.");
         return;
       }
@@ -213,25 +222,36 @@ export default function AddPage() {
 
       // Create the weekly plan if it does not exist.
       // If it already exists, reuse it.
+      const { data: week, error: weekError } =
+        await supabase
+          .from("weeks")
+          .upsert(
+            {
+              user_id: user.id,
+              week_start: weekStart,
+              week_end: weekEndDate,
+              boss_completed: false,
+            },
+            {
+              onConflict: "user_id,week_start",
+            }
+          )
+          .select("id")
+          .single();
 
-      const { data: weekId, error: weekError } =
-      await supabase.rpc("get_or_create_week", {
-        p_week_start: weekStart,
-      });
-
-    if (weekError || !weekId) {
-      throw new Error(
-        weekError?.message ||
-          "Could not create the weekly plan."
-      );
-    }
+      if (weekError || !week) {
+        throw new Error(
+          weekError?.message ||
+            "Could not create the weekly plan."
+        );
+      }
 
       const { data: task, error: taskError } =
         await supabase
           .from("tasks")
           .insert({
             user_id: user.id,
-           week_id: weekId,
+            week_id: week.id,
             title: title.trim(),
             task_type: taskType,
             category,
@@ -240,9 +260,11 @@ export default function AddPage() {
               category === "Study"
                 ? subject.trim()
                 : null,
+            // Timed-task targets are always stored in minutes,
+            // regardless of which unit the user selected in the form.
             target_value:
               taskType === "timed"
-                ? Number(duration)
+                ? totalDurationMinutes
                 : null,
             measurement_unit:
               taskType === "timed"
@@ -514,21 +536,39 @@ export default function AddPage() {
                 Duration
               </h2>
 
-              <div className="flex items-center gap-3">
+              <div className="grid grid-cols-[minmax(0,1fr)_132px] items-center gap-3">
                 <input
                   type="number"
                   min="1"
+                  step="1"
+                  inputMode="numeric"
+                  aria-label="Duration amount"
                   value={duration}
                   onChange={(e) =>
                     setDuration(e.target.value)
                   }
-                  className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-gray-900 outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100"
+                  placeholder={durationUnit === "hours" ? "1" : "60"}
+                  className="w-full min-w-0 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-gray-900 outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100"
                 />
 
-                <span className="text-sm font-medium text-gray-500">
-                  minutes
-                </span>
+                <select
+                  aria-label="Duration unit"
+                  value={durationUnit}
+                  onChange={(e) =>
+                    setDurationUnit(e.target.value as DurationUnit)
+                  }
+                  className="w-full rounded-2xl border border-gray-200 bg-white px-3 py-3 text-sm font-medium text-gray-700 outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100"
+                >
+                  <option value="minutes">Minutes</option>
+                  <option value="hours">Hours</option>
+                </select>
               </div>
+
+              {totalDurationMinutes > 0 && (
+                <p className="mt-2 text-xs text-gray-400">
+                  Tracked as {totalDurationMinutes} minute{totalDurationMinutes === 1 ? "" : "s"}.
+                </p>
+              )}
             </section>
           )}
 

@@ -362,13 +362,35 @@ export default function Home() {
   async function loadHome() {
     setLoading(true);
 
+    // Reuse the last-known greeting for this browser tab immediately.
+    // We'll validate the cached user against Supabase before retaining it.
+    const cachedUserId = sessionStorage.getItem(
+      "gamifiedtodo-home-user-id"
+    );
+    const cachedDisplayName = cachedUserId
+      ? sessionStorage.getItem(
+          `gamifiedtodo-display-name:${cachedUserId}`
+        )
+      : null;
+
+    if (cachedDisplayName) {
+      setDisplayName(cachedDisplayName);
+    }
+
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) {
+      sessionStorage.removeItem("gamifiedtodo-home-user-id");
+      setDisplayName("");
       router.replace("/login");
       return;
+    }
+
+    if (cachedUserId !== user.id) {
+      // Avoid retaining a cached name when a different account is active.
+      setDisplayName("");
     }
 
     // Load profile
@@ -393,6 +415,14 @@ export default function Home() {
     }
 
     setDisplayName(profile.display_name);
+
+    // Cache the greeting per authenticated user for faster return navigation.
+    sessionStorage.setItem("gamifiedtodo-home-user-id", user.id);
+    sessionStorage.setItem(
+      `gamifiedtodo-display-name:${user.id}`,
+      profile.display_name
+    );
+
     setLifetimeXp(profile.lifetime_xp ?? 0);
     setStreak(profile.current_streak ?? 0);
 
@@ -881,7 +911,7 @@ export default function Home() {
             </p>
 
             <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 dark:text-[var(--app-foreground)]">
-              Hey, {loading ? "..." : displayName} 🌸
+              Hey, {displayName || "..."} 🌸
             </h1>
           </div>
 
